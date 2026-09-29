@@ -25,14 +25,14 @@ class Trajets
     #[ORM\Column]
     private ?int $places_totales = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $places_restantes = null;
+    #[ORM\Column]
+    private ?int $places_restantes = null;
 
     #[ORM\Column(length: 255)]
     private ?string $statut = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $id_conducteur = null;
+    #[ORM\Column]
+    private ?int $id_conducteur = null;
 
     public function getId(): ?int
     {
@@ -63,7 +63,7 @@ class Trajets
         return $this;
     }
 
-    public function getDateHeure(): ?DateTime
+    public function getDateHeure(): ?\DateTime
     {
         return $this->date_heure;
     }
@@ -111,12 +111,12 @@ class Trajets
         return $this;
     }
 
-    public function getIdConducteur(): ?string
+    public function getIdConducteur(): ?int
     {
         return $this->id_conducteur;
     }
 
-    public function setIdConducteur(string $id_conducteur): static
+    public function setIdConducteur(int $id_conducteur): static
     {
         $this->id_conducteur = $id_conducteur;
 

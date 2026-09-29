@@ -23,14 +23,14 @@ class Avis
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $date = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $id_trajet = null;
+    #[ORM\Column]
+    private ?int $id_trajet = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $id_auteur = null;
+    #[ORM\Column]
+    private ?int $id_auteur = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $id_cible = null;
+    #[ORM\Column]
+    private ?int $id_cible = null;
 
     public function getId(): ?int
     {
@@ -73,37 +73,36 @@ class Avis
         return $this;
     }
 
-    public function getIdTrajet(): ?string
+    public function getIdTrajet(): ?int
     {
         return $this->id_trajet;
     }
 
-    public function setIdTrajet(string $id_trajet): static
+    public function setIdTrajet(int $id_trajet): static
     {
         $this->id_trajet = $id_trajet;
 
         return $this;
     }
 
-    public function getIdAuteur(): ?string
+    public function getIdAuteur(): ?int
     {
         return $this->id_auteur;
     }
 
-    public function setIdAuteur(string $id_auteur): static
+    public function setIdAuteur(int $id_auteur): static
     {
         $this->id_auteur = $id_auteur;
 
         return $this;
     }
 
-
-    public function getIdCible(): ?string
+    public function getIdCible(): ?int
     {
         return $this->id_cible;
     }
 
-    public function setIdCible(string $id_cible): static
+    public function setIdCible(int $id_cible): static
     {
         $this->id_cible = $id_cible;
 
