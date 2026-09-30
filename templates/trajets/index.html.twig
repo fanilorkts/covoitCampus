@@ -5,6 +5,13 @@
 {% block body %}
     <h1>Trajets index</h1>
 
+    <form method ="get">
+        <input name="depart" placeholder="Départ" value="{{ app.request.query.get('depart') }}">
+        <input name="arrivee " placeholder="Arrivée" value="{{ app.request.query.get('arrivee') }}">
+        <input type="date" name="date" value="{{ app.request.query.get('date') }}">
+        <button type="submit">Rechercher</button>
+    </form>
+
     <table class="table">
         <thead>
             <tr>

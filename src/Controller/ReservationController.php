@@ -110,7 +110,7 @@ final class ReservationController extends AbstractController
 
     #[Route('/{id}/refuser', name: 'app_reservation_refuser', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function refuser (Reservation $reservation, EntityManagerInterface $entityManager): Response
+    public function refuser (Reservation $reservation, EntityManagerInterface $entityManager, Request $request): Response
     {
         $trajet = $reservation->getIdTrajet();
 
@@ -127,7 +127,14 @@ final class ReservationController extends AbstractController
         return  $this->redirectToRoute('app_trajets_show', ['id' => $trajet->getId()]);
     }
 
-
+    #[Route('/mes-reservations', 'app_reservation_mes_reservations', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function mesReservations (ReservationRepository $reservationRepository): Response
+    {
+      return $this->render('reservation/mes_reservations.html.twig', [
+          'reservations' => $reservationRepository->findBy(['id_passager' => $this->getUser()], ['date_heure' => 'DESC']),
+      ]);
+    }
 
 
     #[Route('/{id}', name: 'app_reservation_show', methods: ['GET'])]
