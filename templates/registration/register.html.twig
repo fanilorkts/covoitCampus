@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/auth.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="auth-page">
+
+    {# Panneau gauche #}
+    <aside class="auth-brand">
+        <span class="auth-brand__circle auth-brand__circle--1"></span>
+        <span class="auth-brand__circle auth-brand__circle--2"></span>
+        <span class="auth-brand__circle auth-brand__circle--3"></span>
+
+        <div class="auth-brand__content">
+            <span class="auth-brand__logo">CovoitCampus</span>
+            <h2 class="auth-brand__title">
+                Voyagez ensemble,<br>
+                <span class="auth-brand__title-accent">simplement.</span>
+            </h2>
+            <p class="auth-brand__text">
+                Rejoignez la communauté de covoiturage du campus.
+            </p>
+        </div>
+    </aside>
+
+    {# Panneau droit #}
+    <main class="auth-form-panel">
+        <div class="auth-form">
+            <h1 class="auth-form__title">Inscription</h1>
+            <p class="auth-form__subtitle">Créez votre compte pour commencer.</p>
+
+            {% if registrationForm.vars.errors|length %}
+                <div class="auth-alert">{{ form_errors(registrationForm) }}</div>
+            {% endif %}
+
+            {{ form_start(registrationForm) }}
+
+                {# Un même bloc pour tous les champs texte : le label vient du FormType #}
+                {% for name in ['nom', 'prenom', 'dateNaissance', 'email', 'plainPassword'] %}
+                    {% set field = registrationForm[name] %}
+                    <div class="auth-field">
+                        {{ form_label(field) }}
+                        {{ form_widget(field, {'attr': {'class': 'auth-input'}}) }}
+                        {{ form_errors(field) }}
+                    </div>
+                {% endfor %}
+
+                <div class="auth-field auth-field--checkbox">
+                    <label class="auth-checkbox">
+                        {{ form_widget(registrationForm.agreeTerms) }}
+                        <span>J'accepte les conditions d'utilisation</span>
+                    </label>
+                    {{ form_errors(registrationForm.agreeTerms) }}
+                </div>
+
+                <button type="submit" class="auth-submit">S'inscrire</button>
+            {{ form_end(registrationForm) }}
+        </div>
+    </main>
+
+</div>
+{% endblock %}
