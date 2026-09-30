@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Trajets{% endblock %}
+
+{% block body %}
+    <h1>Trajets</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ trajet.id }}</td>
+            </tr>
+            <tr>
+                <th>Origine</th>
+                <td>{{ trajet.origine }}</td>
+            </tr>
+            <tr>
+                <th>Destination</th>
+                <td>{{ trajet.destination }}</td>
+            </tr>
+            <tr>
+                <th>Date_heure</th>
+                <td>{{ trajet.dateHeure ? trajet.dateHeure|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Places_totales</th>
+                <td>{{ trajet.placesTotales }}</td>
+            </tr>
+            <tr>
+                <th>Places_restantes</th>
+                <td>{{ trajet.placesRestantes }}</td>
+            </tr>
+            <tr>
+                <th>Statut</th>
+                <td>{{ trajet.statut }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_trajets_index') }}">back to list</a>
+
+    <a href="{{ path('app_trajets_edit', {'id': trajet.id}) }}">edit</a>
+
+    {{ include('trajets/_delete_form.html.twig') }}
+{% endblock %}

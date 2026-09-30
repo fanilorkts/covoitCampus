@@ -23,14 +23,17 @@ class Avis
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $date = null;
 
-    #[ORM\Column]
-    private ?int $id_trajet = null;
+    #[ORM\ManyToOne(targetEntity: Trajets::class)]
+    #[ORM\JoinColumn(name: "id_trajet", referencedColumnName: "id", nullable: false)]
+    private ?Trajets $id_trajet = null;
 
-    #[ORM\Column]
-    private ?int $id_auteur = null;
+    #[ORM\ManyToOne(targetEntity: Utilisateurs::class)]
+    #[ORM\JoinColumn(name: "id_auteur", referencedColumnName: "id", nullable: false)]
+    private ?Utilisateurs $id_auteur = null;
 
-    #[ORM\Column]
-    private ?int $id_cible = null;
+    #[ORM\ManyToOne(targetEntity: Utilisateurs::class)]
+    #[ORM\JoinColumn(name: "id_cible", referencedColumnName: "id", nullable: false)]
+    private ?Utilisateurs $id_cible = null;
 
     public function getId(): ?int
     {
@@ -73,36 +76,36 @@ class Avis
         return $this;
     }
 
-    public function getIdTrajet(): ?int
+    public function getTrajet(): ?Trajets
     {
         return $this->id_trajet;
     }
 
-    public function setIdTrajet(int $id_trajet): static
+    public function setTrajet(?Trajets $id_trajet): static
     {
         $this->id_trajet = $id_trajet;
 
         return $this;
     }
 
-    public function getIdAuteur(): ?int
+    public function getAuteur(): ?Utilisateurs
     {
         return $this->id_auteur;
     }
 
-    public function setIdAuteur(int $id_auteur): static
+    public function setAuteur(?Utilisateurs $id_auteur): static
     {
         $this->id_auteur = $id_auteur;
 
         return $this;
     }
 
-    public function getIdCible(): ?int
+    public function getCible(): ?Utilisateurs
     {
         return $this->id_cible;
     }
 
-    public function setIdCible(int $id_cible): static
+    public function setCible(?Utilisateurs $id_cible): static
     {
         $this->id_cible = $id_cible;
 

@@ -20,11 +20,13 @@ class Reservation
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $date_reservation = null;
 
-    #[ORM\Column]
+    #[ORM\ManyToOne (targetEntity: Trajets::class)]
+    #[ORM\JoinColumn(name: "id_trajet", referencedColumnName: "id")]
     private ?int $id_trajet = null;
 
-    #[ORM\Column]
-    private ?int $id_passager = null;
+    #[ORM\ManyToOne (targetEntity: Utilisateurs::class)]
+    #[ORM\JoinColumn(name: "id_passager", referencedColumnName: "id")]
+    private ?Utilisateurs $id_passager = null;
 
     public function getId(): ?int
     {
@@ -67,12 +69,12 @@ class Reservation
         return $this;
     }
 
-    public function getIdPassager(): ?int
+    public function getIdPassager(): ?Utilisateurs
     {
         return $this->id_passager;
     }
 
-    public function setIdPassager(int $id_passager): static
+    public function setIdPassager(Utilisateurs $id_passager): static
     {
         $this->id_passager = $id_passager;
 

@@ -31,8 +31,10 @@ class Trajets
     #[ORM\Column(length: 255)]
     private ?string $statut = null;
 
-    #[ORM\Column]
-    private ?int $id_conducteur = null;
+    #[ORM\ManyToOne (targetEntity: Utilisateurs::class)]
+    #[ORM\JoinColumn(name: "id_conducteur", referencedColumnName: "id")
+    ]
+    private ?Utilisateurs $id_conducteur = null;
 
     public function getId(): ?int
     {
@@ -111,15 +113,32 @@ class Trajets
         return $this;
     }
 
-    public function getIdConducteur(): ?int
+    public function getIdConducteur(): ?Utilisateurs
     {
         return $this->id_conducteur;
     }
 
-    public function setIdConducteur(int $id_conducteur): static
+    public function setIdConducteur(Utilisateurs $id_conducteur): static
     {
         $this->id_conducteur = $id_conducteur;
 
         return $this;
+    }
+
+    public function reserverPlace (Utilisateurs $passager) : bool
+    {
+        if ($this->places_restantes <= 0){
+            throw new \Exception ("Oh non ! Il n'y a plus de place disponible pour ce trajet");
+        }
+
+        $this->places_restantes--;
+
+        
+
+        if ($this->places_restantes === 0) {
+            $this->statut = 'Complet !';
+        }
+
+        return true;
     }
 }

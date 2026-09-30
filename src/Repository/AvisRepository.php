@@ -16,6 +16,19 @@ class AvisRepository extends ServiceEntityRepository
         parent::__construct($registry, Avis::class);
     }
 
+    public function noteMoyenne (int $id_utilisateur) : float 
+    {
+        $resultat = $this->createQueryBuilder('note')
+            ->select('AVG(note.note) as moyenne')
+            -> where ('note.cible = :id_utilisateur')
+            ->setParameter('id_utilisateur', $id_utilisateur)
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+
+        return (float) $resultat != null ? (float) $resultat : 0.0;
+    }
+
 //    /**
 //     * @return Avis[] Returns an array of Avis objects
 //     */

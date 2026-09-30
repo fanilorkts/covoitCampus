@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Trajets index{% endblock %}
+
+{% block body %}
+    <h1>Trajets index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Origine</th>
+                <th>Destination</th>
+                <th>Date_heure</th>
+                <th>Places_totales</th>
+                <th>Places_restantes</th>
+                <th>Statut</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for trajet in trajets %}
+            <tr>
+                <td>{{ trajet.id }}</td>
+                <td>{{ trajet.origine }}</td>
+                <td>{{ trajet.destination }}</td>
+                <td>{{ trajet.dateHeure ? trajet.dateHeure|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ trajet.placesTotales }}</td>
+                <td>{{ trajet.placesRestantes }}</td>
+                <td>{{ trajet.statut }}</td>
+                <td>
+                    <a href="{{ path('app_trajets_show', {'id': trajet.id}) }}">show</a>
+                    <a href="{{ path('app_trajets_edit', {'id': trajet.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_trajets_new') }}">Create new</a>
+{% endblock %}
