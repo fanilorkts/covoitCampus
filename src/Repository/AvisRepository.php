@@ -20,7 +20,7 @@ class AvisRepository extends ServiceEntityRepository
     {
         $resultat = $this->createQueryBuilder('note')
             ->select('AVG(note.note) as moyenne')
-            -> where ('note.cible = :id_utilisateur')
+            -> where ('note.id_cible = :id_utilisateur')
             ->setParameter('id_utilisateur', $id_utilisateur)
             ->getQuery()
             ->getSingleScalarResult()

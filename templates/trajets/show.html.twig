@@ -38,6 +38,33 @@
         </tbody>
     </table>
 
+    {% if trajet.statut == constant {App\Entity\Trajets::STATUTS_OUVERT} and app.user != trajet.idConducteur %}
+        <form method="post" action="{{ path('app_reservation_new', {'id_trajet': trajet.id}) }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('reservation' ~ trajet.id) }}">
+            <button class="btn btn-success">Réserver</button>
+        </form>
+    {% endif %}
+
+    {% if app.user and app.user == trajet.idConducteur %}
+        <h2>Les Demandes de Réservation</h2>
+        {% for r in reservations %}
+            <div>
+                {{ r.id_passager.nom }} - {{ r.status }} 
+                {%  if r.status == constant {App\Entity\Reservation::STATUS_EN_ATTENTE} %}
+                    <form method="post" action="{{ path('app_reservation_accepter', {'id': r.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('accepter' ~ r.id) }}">
+                        <button class="btn btn-success">Accepter</button>
+                    </form>
+                    <form method="post" action="{{ path('app_reservation_refuser', {'id': r.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('refuser' ~ r.id) }}">
+                        <button class="btn btn-danger">Refuser</button>
+                    </form>
+                {% endif %}
+                {% else %}
+                    <p>Aucune demande pour le moment.</p>
+                {% endfor %}
+            </div>
+
     <a href="{{ path('app_trajets_index') }}">back to list</a>
 
     <a href="{{ path('app_trajets_edit', {'id': trajet.id}) }}">edit</a>

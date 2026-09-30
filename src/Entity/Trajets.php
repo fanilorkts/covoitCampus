@@ -8,6 +8,11 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: TrajetsRepository::class)]
 class Trajets
 {
+
+    public const STATUTS_OUVERT = 'Ouvert';
+    public const STATUTS_COMPLET = 'Complet';
+    public const STATUTS_TERMINE = 'Terminé';
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -127,8 +132,17 @@ class Trajets
 
     public function reserverPlace (Utilisateurs $passager) : bool
     {
+
+        if ($this->statut !== self::STATUTS_OUVERT) {
+            throw new \Exception ("Désolé, ce trajet n'est pas ouvert à la réservation.");
+        }
+
         if ($this->places_restantes <= 0){
             throw new \Exception ("Oh non ! Il n'y a plus de place disponible pour ce trajet");
+        }
+
+        if ($this->id_conducteur === $passager) {
+            throw new \Exception ("Vous ne pouvez pas réserver une place pour votre propre trajet.");
         }
 
         $this->places_restantes--;
@@ -136,9 +150,11 @@ class Trajets
         
 
         if ($this->places_restantes === 0) {
-            $this->statut = 'Complet !';
+            $this->statut = self::STATUTS_COMPLET;
         }
+
 
         return true;
     }
+
 }

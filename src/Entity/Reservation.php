@@ -9,6 +9,11 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
 class Reservation
 {
+
+    public const STATUS_EN_ATTENTE = 'En attente';
+    public const STATUS_CONFIRME = 'Confirmée';
+    public const STATUS_REFUSEE = 'Refusée';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -22,7 +27,7 @@ class Reservation
 
     #[ORM\ManyToOne (targetEntity: Trajets::class)]
     #[ORM\JoinColumn(name: "id_trajet", referencedColumnName: "id")]
-    private ?int $id_trajet = null;
+    private ?Trajets $id_trajet = null;
 
     #[ORM\ManyToOne (targetEntity: Utilisateurs::class)]
     #[ORM\JoinColumn(name: "id_passager", referencedColumnName: "id")]
@@ -57,12 +62,12 @@ class Reservation
         return $this;
     }
 
-    public function getIdTrajet(): ?int
+    public function getIdTrajet(): ?Trajets
     {
         return $this->id_trajet;
     }
 
-    public function setIdTrajet(int $id_trajet): static
+    public function setIdTrajet(Trajets $id_trajet): static
     {
         $this->id_trajet = $id_trajet;
 

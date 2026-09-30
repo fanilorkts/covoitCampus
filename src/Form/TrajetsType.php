@@ -18,13 +18,7 @@ class TrajetsType extends AbstractType
             ->add('destination')
             ->add('date_heure')
             ->add('places_totales')
-            ->add('places_restantes')
-            ->add('statut')
-            ->add('id_conducteur', EntityType::class, [
-                'class' => Utilisateurs::class,
-                'choice_label' => 'id',
-            ])
-        ;
+     ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

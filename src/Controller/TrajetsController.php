@@ -5,12 +5,12 @@ namespace App\Controller;
 use App\Entity\Trajets;
 use App\Form\TrajetsType;
 use App\Repository\TrajetsRepository;
+use App\Repository\ReservationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-
 #[Route('/trajets')]
 final class TrajetsController extends AbstractController
 {
@@ -30,6 +30,13 @@ final class TrajetsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $trajet ->setIdConducteur($this->getUser());
+
+            $trajet ->setPlacesRestantes($trajet->getPlacesTotales());
+
+            $trajet ->setStatut(Trajets::STATUTS_OUVERT);
+
             $entityManager->persist($trajet);
             $entityManager->flush();
 
@@ -43,10 +50,11 @@ final class TrajetsController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_trajets_show', methods: ['GET'])]
-    public function show(Trajets $trajet): Response
+    public function show(Trajets $trajet, ReservationRepository $reservationRepository): Response
     {
         return $this->render('trajets/show.html.twig', [
             'trajet' => $trajet,
+            'reservations' => $reservationRepository->findBy(['id_trajet' => $trajet->getId()]),
         ]);
     }
 
