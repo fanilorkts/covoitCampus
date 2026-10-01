@@ -39,8 +39,8 @@
     </table>
 
     {% if trajet.statut == constant {App\Entity\Trajets::STATUTS_OUVERT} and app.user != trajet.idConducteur %}
-        <form method="post" action="{{ path('app_reservation_new', {'id_trajet': trajet.id}) }}">
-            <input type="hidden" name="_token" value="{{ csrf_token('reservation' ~ trajet.id) }}">
+        <form method="post" action="{{ path('app_reservation_new_trajet', {'id': trajet.id}) }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('reserver' ~ trajet.id) }}">
             <button class="btn btn-success">Réserver</button>
         </form>
     {% endif %}

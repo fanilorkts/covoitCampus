@@ -45,7 +45,7 @@ final class ReservationController extends AbstractController
         ]);
     }
 
-    #[Route ('/Trajet/{id_trajet}/reserver', name: 'app_reservation_new_for_trajet', methods: ['GET', 'POST'])]
+    #[Route ('/Trajet/{id}/reserver', name: 'app_reservation_new_trajet', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function reserver (\App\Entity\Trajets $trajet, Request $request, EntityManagerInterface $entityManager, ReservationRepository $reservationRepository): Response
     {
@@ -58,28 +58,32 @@ final class ReservationController extends AbstractController
             if ($trajet->getStatut() !== Trajets::STATUTS_OUVERT) {
                 $this->addFlash('error', 'Le trajet n\'est pas ouvert à la réservation.');
                 return $this->redirectToRoute('app_trajets_index');
-            }else if ($trajet->getIdConducteur() === $user) {
+            }
+            
+            if ($trajet->getIdConducteur() === $user) {
                 $this->addFlash('error', 'Vous ne pouvez pas réserver votre propre trajet.');
                 return $this->redirectToRoute('app_trajets_index');
-            }else if ($trajet-> $reservationRepository->findOneBy(['id_trajet' => $trajet, 'id_passager' => $user])) {
+            }
+            
+            if ($reservationRepository->findOneBy(['id_trajet' => $trajet, 'id_passager' => $user])) {
                 $this->addFlash('error', 'Vous avez déjà réservé ce trajet.');
                 return $this->redirectToRoute('app_trajets_index');
-            }else {
-                $reservation = new Reservation();
-                $reservation->setIdTrajet($trajet);
-                $reservation->setIdPassager($user);
-                $reservation->setStatut(Reservation::STATUS_EN_ATTENTE);
-                $reservation->setDateReservation(new \DateTime());
+            }
+            
+            $reservation = new Reservation();
+            $reservation->setIdTrajet($trajet);
+            $reservation->setIdPassager($user);
+            $reservation->setStatut(Reservation::STATUS_EN_ATTENTE);
+            $reservation->setDateReservation(new \DateTime());
 
-                $entityManager->persist($reservation);
-                $entityManager->flush();
+            $entityManager->persist($reservation);
+            $entityManager->flush();
 
-                $conducteur = $trajet->getIdConducteur();
+            $conducteur = $trajet->getIdConducteur();
 
-                $this->addFlash('success', 'Votre réservation a été envoyer à ' . $conducteur->getNom() . ' !');
-                return $this->redirectToRoute('app_trajets_index');
+            $this->addFlash('success', 'Votre réservation a été envoyer à ' . $conducteur->getNom() . ' !');
+            return $this->redirectToRoute('app_trajets_index');
         }
-    }
 
     #[Route('/{id}/accepter', name: 'app_reservation_accepter', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
