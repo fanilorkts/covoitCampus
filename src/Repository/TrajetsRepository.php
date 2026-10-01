@@ -19,7 +19,7 @@ class TrajetsRepository extends ServiceEntityRepository
     public function RechercheTrajets(?string $origine, ?string $destination, ?\DateTimeInterface $date): array
     {
         $qb = $this->createQueryBuilder('t') 
-            ->orderBy('t.dateHeure', 'ASC');
+            ->orderBy('t.date_heure', 'ASC');
 
         if ($origine) {
             $qb->andWhere('t.origine LIKE :origine')
@@ -31,7 +31,7 @@ class TrajetsRepository extends ServiceEntityRepository
         }
 
         if ($date) {
-            $qb->andWhere('DATE(t.dateHeure) = :date')
+            $qb->andWhere('DATE(t.date_heure) = :date')
                 ->setParameter('date', $date->format('Y-m-d'));
         }
 
