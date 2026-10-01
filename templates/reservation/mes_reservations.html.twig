@@ -21,6 +21,12 @@
                 <td>{{ r.idTrajet.dateHeure|date('d-m-Y H:i') }}</td>
                 <td>{{ r.dateReservation ? r.dateReservation|date('Y-m-d') : '' }}</td>
                 <td>{{ r.statut }}</td>
+                <td>
+                    <form method="post" action="{{ path('app_reservation_annuler', {'id': r.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('annuler' ~ r.id) }}">
+                        <button type="submit">Annuler</button>
+                    </form>
+                </td>
             </tr>
         {% else %}
             <tr>

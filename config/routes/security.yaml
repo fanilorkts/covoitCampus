@@ -1,3 +1,10 @@
 _security_logout:
     resource: security.route_loader.logout
     type: service
+
+access_control:
+    - { path: ^/login, roles: PUBLIC_ACCESS }
+    - { path: ^/register, roles: PUBLIC_ACCESS }
+    - { path: ^/admin, roles: ROLE_ADMIN }
+    - { path: ^/reservation, roles: ROLE_USER }
+    - { path: ^/avis, roles: ROLE_USER }

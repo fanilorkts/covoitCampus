@@ -156,5 +156,14 @@ class Trajets
 
         return true;
     }
+    public function libererPlace(): void
+    {
+        if ($this->places_restantes < $this->places_totales) {
+            $this->places_restantes++;
+        }
+        if ($this->statut === self::STATUTS_COMPLET) {
+            $this->statut = self::STATUTS_OUVERT;
+        }
+    }
 
 }

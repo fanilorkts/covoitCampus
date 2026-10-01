@@ -18,6 +18,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ReservationController extends AbstractController
 {
     #[Route(name: 'app_reservation_index', methods: ['GET'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function index(ReservationRepository $reservationRepository): Response
     {
         return $this->render('reservation/index.html.twig', [
@@ -26,6 +27,7 @@ final class ReservationController extends AbstractController
     }
 
     #[Route('/new', name: 'app_reservation_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $reservation = new Reservation();
@@ -140,16 +142,50 @@ final class ReservationController extends AbstractController
       ]);
     }
 
+    #[Route('/{id}/annuler', name: 'app_reservation_annuler', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_USER')]
+    public function annuler(Reservation $reservation, Request $request, EntityManagerInterface $entityManager): Response
+    
+    {
+
+        if ($reservation->getIdPassager() !== $this->getUser()
+            || !$this->isCsrfTokenValid('annuler'.$reservation->getId(), $request->getPayload()->getString('_token'))) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $trajet = $reservation->getIdTrajet();
+
+        if ($trajet->getStatut() === Trajets::STATUTS_TERMINE) {
+            $this->addFlash('error', 'Ce trajet est terminé, impossible d\'annuler.');
+            return $this->redirectToRoute('app_reservation_mes_reservations');
+        }
+
+        if ($reservation->getStatut() === Reservation::STATUS_CONFIRME) {
+            $trajet->libererPlace();
+        }
+
+        $entityManager->remove($reservation);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Votre réservation a été annulée.');
+        return $this->redirectToRoute('app_reservation_mes_reservations');
+    }
+
 
     #[Route('/{id}', name: 'app_reservation_show', methods: ['GET'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function show(Reservation $reservation): Response
     {
-        return $this->render('reservation/show.html.twig', [
-            'reservation' => $reservation,
-        ]);
+        $user = $this->getUser();
+        if ($reservation->getIdPassager() !== $user
+            && $reservation->getIdTrajet()->getIdConducteur() !== $user) {
+            throw $this->createAccessDeniedException();
+    }
+    return $this->render('reservation/show.html.twig', ['reservation' => $reservation]);
     }
 
     #[Route('/{id}/edit', name: 'app_reservation_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function edit(Request $request, Reservation $reservation, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ReservationType::class, $reservation);
@@ -168,6 +204,7 @@ final class ReservationController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_reservation_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Reservation $reservation, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$reservation->getId(), $request->getPayload()->getString('_token'))) {

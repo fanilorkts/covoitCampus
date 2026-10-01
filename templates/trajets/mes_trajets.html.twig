@@ -21,7 +21,7 @@
                 <td>{{ t.origine }}</td>
                 <td>{{ t.destination }}</td>
                 <td>{{ t.dateHeure|date('d-m-Y H:i') }}</td>
-                <td>{{ t.placesRestantes }} / {{ t.nombrePlaces }}</td>
+                <td>{{ t.placesRestantes }} / {{ t.placesTotales }}</td>
                 <td>{{ t.statut }}</td>
                 <td>
                     <a href="{{ path('app_trajets_show', {'id': t.id}) }}">Montrer</a>
@@ -30,7 +30,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="6">Vous n'avez pas encore crée un trajet/td>
+                <td colspan="8">Vous n'avez pas encore crée un trajet</td>
             </tr>
         {% endfor %}
         </tbody>

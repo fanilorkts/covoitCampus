@@ -28,6 +28,8 @@ final class AvisController extends AbstractController
         $avi = new Avis();
         $form = $this->createForm(AvisType::class, $avi);
         $form->handleRequest($request);
+        $avi->setAuteur($this->getUser());
+        $avi->setDate(new \DateTime());
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($avi);

@@ -3,8 +3,6 @@
 namespace App\Form;
 
 use App\Entity\Trajets;
-use App\Entity\Utilisateurs;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,7 +16,7 @@ class TrajetsType extends AbstractType
             ->add('destination')
             ->add('date_heure')
             ->add('places_totales')
-     ;
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -27,4 +25,6 @@ class TrajetsType extends AbstractType
             'data_class' => Trajets::class,
         ]);
     }
+
+    
 }
