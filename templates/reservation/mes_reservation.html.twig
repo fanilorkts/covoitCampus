@@ -1,0 +1,36 @@
+extends 'base.html.twig' %}
+
+{% block title %}Mes Réservations{% endblock %}
+
+{% block body %}
+    <h1>Mes Réservations</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Trajets</th>
+                <th>Date</th>
+                <th>Statut</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for r  in reservations %}
+            <tr>
+                <td><a href="{{path('app_trajets_show', {'id' : r.idTrajets.id})}}">{{ r.idTrajets.origine }} → {{ r.idTrajets.destination }}</a></td>
+                <td>{{ r.trajet.dateHeure|date('d-m-Y H:i') }}</td>
+                <td>{{ r.dateReservation ? r.dateReservation|date('Y-m-d') : '' }}</td>
+                <td>{{ r.statut }}</td>
+                 <a href="{{ path('app_reservation_show', {'id': r.id}) }}">Montrer</a>
+                    <a href="{{ path('app_reservation_edit', {'id': r.id}) }}">Modifier</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">Aucun trajet trouvé</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_reservation_new') }}">Créer un nouveau trajet</a>
+{% endblock %}

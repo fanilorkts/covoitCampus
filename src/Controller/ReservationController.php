@@ -87,16 +87,16 @@ final class ReservationController extends AbstractController
 
     #[Route('/{id}/accepter', name: 'app_reservation_accepter', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function accepter (Reservation $reservation, EntityManagerInterface $entityManager): Response
+    public function accepter (Reservation $reservation, EntityManagerInterface $entityManager, Request $request): Response
     {
         $trajet = $reservation->getIdTrajet();
 
-        if ($trajet->getIdConducteur() !== $this->getUser()) {
+        if ($trajet->getIdConducteur() !== $this->getUser() || !$this->IsCsrfTokenValid('accepter'.$reservation->getId(), $request->getPayload()->getString('_token'))) {
             throw $this->createAccessDeniedException();
         }
 
         if ($reservation->getStatut() !== Reservation::STATUS_EN_ATTENTE) {
-            $this->addFlash('error', 'Nous attendons la réponse du conducteur pour cette réservation.');
+            $this->addFlash('error', 'Oups ! Cette réservation a déjà été traitée.');
             return $this->redirectToRoute('app_trajets_show', ['id' => $trajet->getId()]);
         }
         try {
@@ -118,11 +118,11 @@ final class ReservationController extends AbstractController
     {
         $trajet = $reservation->getIdTrajet();
 
-        if ($trajet->getIdConducteur() !== $this->getUser() || $this->IsCsrfTokenValid('refuser'.$reservation->getId(), $request->getPayload()->getString('_token'))) {
+        if ($trajet->getIdConducteur() !== $this->getUser() || !$this->IsCsrfTokenValid('refuser'.$reservation->getId(), $request->getPayload()->getString('_token'))) {
             throw $this->createAccessDeniedException();
         }
 
-        if ($reservation->getStatut() !== Reservation::STATUS_EN_ATTENTE) {
+        if ($reservation->getStatut() === Reservation::STATUS_EN_ATTENTE) {
             $reservation->setStatut(Reservation::STATUS_REFUSEE);
             $entityManager->flush();
             $this->addFlash('success', 'La réservation a été refusée !');
@@ -136,7 +136,7 @@ final class ReservationController extends AbstractController
     public function mesReservations (ReservationRepository $reservationRepository): Response
     {
       return $this->render('reservation/mes_reservations.html.twig', [
-          'reservations' => $reservationRepository->findBy(['id_passager' => $this->getUser()], ['date_heure' => 'DESC']),
+          'reservations' => $reservationRepository->findBy(['id_passager' => $this->getUser()], ['date_reservation' => 'DESC']),
       ]);
     }
 

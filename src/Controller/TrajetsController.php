@@ -72,8 +72,8 @@ final class TrajetsController extends AbstractController
     public function show(Trajets $trajet, ReservationRepository $reservationRepository): Response
     {
         return $this->render('trajets/show.html.twig', [
-            'trajet' => $trajet,
-            'reservations' => $reservationRepository->findBy(['trajet' => $trajet]),
+            'id_trajet' => $trajet,
+            'reservations' => $reservationRepository->findBy(['id_trajet' => $trajet]),
         ]);
     }
 

@@ -16,6 +16,28 @@ class TrajetsRepository extends ServiceEntityRepository
         parent::__construct($registry, Trajets::class);
     }
 
+    public function RechercheTrajets(?string $origine, ?string $destination, ?\DateTimeInterface $date): array
+    {
+        $qb = $this->createQueryBuilder('t') 
+            ->orderBy('t.dateHeure', 'ASC');
+
+        if ($origine) {
+            $qb->andWhere('t.origine LIKE :origine')
+                ->setParameter('origine', '%' . $origine . '%');
+        }
+        if ($destination) {
+            $qb->andWhere('t.destination LIKE :destination')
+                ->setParameter('destination', '%' . $destination . '%');
+        }
+
+        if ($date) {
+            $qb->andWhere('DATE(t.dateHeure) = :date')
+                ->setParameter('date', $date->format('Y-m-d'));
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
 //    /**
 //     * @return Trajets[] Returns an array of Trajets objects
 //     */

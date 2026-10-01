@@ -1,0 +1,40 @@
+{%extends 'base.html.twig' %}
+
+{% block title %}Mes Trajets{% endblock %}
+
+{% block body %}
+    <h1>Mes Trajets</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Origine</th>
+                <th>Destination</th>
+                <th>Horaires</th>
+                <th>Places Restantes</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for t  in trajets %}
+            <tr>
+                <td>{{ t.origine }}</td>
+                <td>{{ t.destination }}</td>
+                <td>{{ t.dateHeure|date('d-m-Y H:i') }}</td>
+                <td>{{ t.placesRestantes }} / {{ t.nombrePlaces }}</td>
+                <td>{{ t.statut }}</td>
+                <td>
+                    <a href="{{ path('app_trajets_show', {'id': t.id}) }}">Montrer</a>
+                    <a href="{{ path('app_trajets_edit', {'id': t.id}) }}">Modifier</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">Vous n'avez pas encore crée un trajet/td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_trajets_new') }}">Créer un trajet</a>
+{% endblock %}

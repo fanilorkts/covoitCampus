@@ -6,9 +6,9 @@
     <h1>Trajets index</h1>
 
     <form method ="get">
-        <input name="depart" placeholder="Départ" value="{{ app.request.query.get('depart') }}">
-        <input name="arrivee " placeholder="Arrivée" value="{{ app.request.query.get('arrivee') }}">
-        <input type="date" name="date" value="{{ app.request.query.get('date') }}">
+        <input name="origine" placeholder="Départ" value="{{ app.request.query.get('origine') }}">
+        <input name="destination" placeholder="Arrivée" value="{{ app.request.query.get('destination') }}">
+        <input type="date" name="date_saisie" value="{{ app.request.query.get('date_saisie') }}">
         <button type="submit">Rechercher</button>
     </form>
 
