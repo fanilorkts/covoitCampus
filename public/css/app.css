@@ -451,3 +451,146 @@ button.avatar {
 
 /* Section qui occupe toute la largeur de la grille du dashboard */
 .dashboard__full { grid-column: 1 / -1; }
+
+/* ============================================================
+   Dashboard passager
+   ============================================================ */
+
+/* Cartes de stats colorées (4 en ligne) */
+.stats--row { grid-template-columns: repeat(4, 1fr); }
+
+.stat-card--sage   { background: var(--sage);   color: #fff; }
+.stat-card--clay   { background: var(--clay);   color: #fff; }
+.stat-card--forest { background: var(--forest); color: #fff; }
+
+.stat-card--sage .stat-card__label,
+.stat-card--clay .stat-card__label,
+.stat-card--forest .stat-card__label { color: rgba(255, 255, 255, 0.75); }
+
+.stat-card--sage .stat-card__icon,
+.stat-card--clay .stat-card__icon,
+.stat-card--forest .stat-card__icon { color: rgba(255, 255, 255, 0.85); }
+
+/* Prochain trajet */
+.next-ride {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.9rem;
+}
+
+.next-ride__main {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 1.4rem;
+    background: var(--forest);
+    color: #fff;
+    border-radius: var(--radius-md);
+}
+
+.next-ride__route { font-size: 1.3rem; font-weight: 700; }
+.next-ride__meta { font-size: 0.75rem; color: rgba(255, 255, 255, 0.7); }
+
+.next-ride__side { display: grid; gap: 0.9rem; }
+
+.pill {
+    display: inline-block;
+    padding: 0.15rem 0.8rem;
+    border-radius: var(--radius-pill);
+    background: var(--clay);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+.btn--light { background: #fff; color: var(--forest); }
+.btn--light:hover { background: var(--sage-pale); }
+
+.highlight {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1rem 1.2rem;
+    background: var(--surface);
+    border-radius: var(--radius-md);
+}
+
+.highlight--clay { background: var(--clay); color: #fff; }
+.highlight strong { font-size: 1.2rem; }
+.highlight small { font-size: 0.72rem; opacity: 0.75; }
+
+/* Trajets habituels */
+.chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+.chip {
+    padding: 0.35rem 0.9rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    font-size: 0.75rem;
+}
+
+.chip--add { background: var(--sage-pale); border-color: transparent; font-weight: 700; }
+
+/* Historique récent */
+.subhead { margin: 1.6rem 0 0.9rem; font-size: 0.8rem; font-weight: 700; }
+
+.history__item {
+    position: relative;
+    padding: 0 0 1rem 1.2rem;
+    border-left: 2px solid var(--line);
+    font-size: 0.8rem;
+}
+
+.history__item::before {
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: 0.35rem;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--sage);
+}
+
+.history__item strong { display: block; }
+.history__item small { color: var(--muted); font-size: 0.72rem; }
+
+/* Barre "Find a ride" */
+.search-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) auto;
+    gap: 0.4rem;
+    padding: 0.6rem;
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+}
+
+.search-bar input {
+    min-width: 0;
+    padding: 0.7rem 0.9rem;
+    border: 0;
+    border-right: 1px solid var(--line);
+    background: transparent;
+    font: inherit;
+    font-size: 0.85rem;
+}
+
+.search-bar input:last-of-type { border-right: 0; }
+
+/* Message quand une liste est vide */
+.empty-card {
+    padding: 1.4rem;
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    color: var(--muted);
+    font-size: 0.8rem;
+}
+
+@media (max-width: 900px) {
+    .stats--row { grid-template-columns: 1fr 1fr; }
+    .next-ride { grid-template-columns: 1fr; }
+    .search-bar { grid-template-columns: 1fr; }
+    .search-bar input { border-right: 0; border-bottom: 1px solid var(--line); }
+}

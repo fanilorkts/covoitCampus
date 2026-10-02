@@ -1,0 +1,165 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Passenger dashboard{% endblock %}
+
+{% block body %}
+{% set today = 'now'|date('Y-m-d') %}
+{% set tomorrow = 'now'|date_modify('+1 day')|date('Y-m-d') %}
+
+<div class="container">
+
+    <h1 class="page-title">Welcome back, {{ user.prenom }}!</h1>
+    <p class="page-subtitle">Here's what's happening with your recap</p>
+
+    <div class="dashboard">
+
+        {# ---------- Statistiques ---------- #}
+        <section class="dashboard__full">
+            <div class="stats stats--row">
+                <div class="stat-card stat-card--sage">
+                    <div class="stat-card__icon">🚗</div>
+                    <div class="stat-card__value">{{ stats.rides }}</div>
+                    <div class="stat-card__label">Rides taken</div>
+                </div>
+                <div class="stat-card stat-card--clay">
+                    <div class="stat-card__icon">€</div>
+                    <div class="stat-card__value">{{ stats.spent|number_format(0, ',', ' ') }}€</div>
+                    <div class="stat-card__label">Spent on rides</div>
+                </div>
+                <div class="stat-card stat-card--forest">
+                    <div class="stat-card__icon">🍃</div>
+                    <div class="stat-card__value">{{ stats.co2 }}kg</div>
+                    <div class="stat-card__label">CO2 saved</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card__icon">★</div>
+                    <div class="stat-card__value">{{ stats.rating ?? '–' }}</div>
+                    <div class="stat-card__label">Your passenger rating</div>
+                </div>
+            </div>
+        </section>
+
+        {# ---------- Prochain trajet ---------- #}
+        <section class="dashboard__full">
+            <div class="section-head"><h2>Next ride</h2></div>
+            {% if next %}
+                {% set day = next.trajet.dateHeure|date('Y-m-d') %}
+                <div class="next-ride">
+                    <article class="next-ride__main">
+                        <span class="pill">
+                            {% if day == today %}Today{% elseif day == tomorrow %}Tomorrow{% else %}{{ next.trajet.dateHeure|date('d/m/Y') }}{% endif %}
+                        </span>
+                        <div class="next-ride__route">{{ next.trajet.origine }} → {{ next.trajet.destination }}</div>
+                        <div class="next-ride__meta">
+                            {{ next.trajet.dateHeure|date('H:i') }} with {{ next.trajet.conducteur.prenom }}
+                        </div>
+                        {# TODO : lien vers la page détail du trajet #}
+                        <a class="btn btn--light" href="#">View ride</a>
+                    </article>
+                    <div class="next-ride__side">
+                        <div class="highlight highlight--clay">
+                            <strong>{{ co2PerRide }}kg</strong>
+                            <small>CO2 saved on this ride</small>
+                        </div>
+                        <div class="highlight">
+                            <strong>{{ next.trajet.prix is not null ? next.trajet.prix ~ '€' : '–' }}</strong>
+                            <small>Price of this ride</small>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p class="empty-card">No upcoming ride. Use the search below to find one.</p>
+            {% endif %}
+        </section>
+
+        {# ---------- Trajets habituels + historique ---------- #}
+        <section>
+            <div class="section-head"><h2>Your usual routes</h2></div>
+            <div class="chips">
+                {% for r in routes %}
+                    <span class="chip">{{ r.origine }} → {{ r.destination }}</span>
+                {% else %}
+                    <span class="page-subtitle">No usual routes yet.</span>
+                {% endfor %}
+                {# TODO : lien vers la recherche de trajets #}
+                <a class="chip chip--add" href="#" aria-label="Find a ride">+</a>
+            </div>
+
+            <h3 class="subhead">Recent history</h3>
+            {% for h in history %}
+                <div class="history__item">
+                    <strong>{{ h.trajet.origine }} → {{ h.trajet.destination }}</strong>
+                    <small>With {{ h.trajet.conducteur.prenom }} · {{ h.trajet.dateHeure|date('d/m/Y H:i') }}</small>
+                </div>
+            {% else %}
+                <p class="page-subtitle">No rides yet.</p>
+            {% endfor %}
+        </section>
+
+        {# ---------- Demandes en attente ---------- #}
+        <section>
+            <div class="section-head"><h2>Pending requests</h2></div>
+            <div class="ride-list">
+                {% for r in pending %}
+                    <article class="ride-card">
+                        <div>
+                            <span class="badge badge--pending">Pending</span>
+                            <div class="ride-card__route">{{ r.trajet.origine }} → {{ r.trajet.destination }}</div>
+                            <div class="ride-card__meta">With {{ r.trajet.conducteur.prenom }}</div>
+                        </div>
+                        <div class="ride-card__date">{{ r.trajet.dateHeure|date('d/m/Y') }}<br>{{ r.trajet.dateHeure|date('H:i') }}</div>
+                    </article>
+                {% else %}
+                    <p class="empty-card">No pending requests.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        {# ---------- Rechercher un trajet ---------- #}
+        <section class="dashboard__full">
+            <div class="section-head"><h2>Find a ride</h2></div>
+            {# TODO : remplace action="#" par la route de ta page de recherche (method GET) #}
+            <form class="search-bar" method="get" action="#">
+                <input type="text" name="from" placeholder="From" aria-label="From">
+                <input type="text" name="to" placeholder="To" aria-label="To">
+                <input type="date" name="date" aria-label="Date">
+                <input type="number" name="passengers" min="1" max="8" placeholder="Passengers" aria-label="Passengers">
+                <button type="submit" class="btn btn--primary">Search</button>
+            </form>
+        </section>
+
+        {# ---------- Messages (pas encore de messagerie en base) ---------- #}
+        <section>
+            <div class="section-head"><h2>Messages</h2></div>
+            <p class="empty-card">No messages yet.</p>
+        </section>
+
+        {# ---------- Profil ---------- #}
+        <section>
+            <div class="section-head">
+                <h2>Profile</h2>
+                <a href="#">View all</a>
+            </div>
+            <div class="profile">
+                <div class="profile__card">
+                    <span class="avatar avatar--lg">{{ user.prenom|first|upper }}</span>
+                    <strong>{{ user.prenom }} {{ user.nom }}</strong>
+                    <dl>
+                        <dt>Date of birth</dt>
+                        <dd>{{ user.dateNaissance ? user.dateNaissance|date('d/m/Y') : '–' }}</dd>
+                    </dl>
+                </div>
+                <div class="profile__note">
+                    <h3>Bio</h3>
+                    {{ user.biographie ?? '–' }}
+                </div>
+                <div class="profile__note">
+                    <h3>Interests</h3>
+                    {{ user.centresInteret ?? '–' }}
+                </div>
+            </div>
+        </section>
+
+    </div>
+</div>
+{% endblock %}
