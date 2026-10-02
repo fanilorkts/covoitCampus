@@ -127,7 +127,7 @@
                     <article class="review-card">
                         <div>
                             <strong>{{ a.commentaire }}</strong>
-                            <small>From {{ a.idAuteur.prenom }}</small>
+                            <small>From {{ a.auteur.prenom }}</small>
                         </div>
                         <span class="stars" aria-label="{{ a.note }} sur 5">
                             {% for i in 1..a.note %}★{% endfor %}
