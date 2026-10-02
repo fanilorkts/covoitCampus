@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil de {{ utilisateur.prenom }}{% endblock %}
+
+{% block body %}
+    <h1>{{ utilisateur.prenom }} {{ utilisateur.nom }}</h1>
+
+    <p>Note moyenne :
+        {% if note > 0 %}<strong>{{ note|number_format(1, ',') }}/5</strong>{% else %}pas encore noté{% endif %}
+    </p>
+    <p>Trajets réalisés : <strong>{{ nbTrajets }}</strong></p>
+
+    <h2>Avis reçus</h2>
+    {% for a in avis %}
+        <p>{{ a.note }}/5 — {{ a.commentaire }} (par {{ a.auteur.prenom }}, le {{ a.date|date('d/m/Y') }})</p>
+    {% else %}
+        <p>Aucun avis pour le moment.</p>
+    {% endfor %}
+
+    {% if utilisateur.centresInteret %}
+    <p>Centres d'intérêt :
+        {% for interet in utilisateur.centresInteret|split(',') %}
+            <span>{{ interet|trim }}</span>{{ not loop.last ? ' · ' : '' }}
+        {% endfor %}
+    </p>
+    {% endif %}
+
+    {% if utilisateur.biographie %}
+        <h2>À propos</h2>
+        <p>{{ utilisateur.biographie|nl2br }}</p>
+    {% endif %}
+
+    {% if app.user and app.user.id == utilisateur.id %}
+        <a href="{{ path('app_profil_modifier') }}">Modifier mon profil</a>
+    {% endif %}
+{% endblock %}

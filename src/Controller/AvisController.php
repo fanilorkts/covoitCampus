@@ -3,81 +3,90 @@
 namespace App\Controller;
 
 use App\Entity\Avis;
+use App\Entity\Reservation;
+use App\Entity\Trajets;
 use App\Form\AvisType;
 use App\Repository\AvisRepository;
+use App\Repository\ReservationRepository;
+use App\Repository\TrajetsRepository;
+use App\Repository\UtilisateursRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/avis')]
+#[IsGranted('ROLE_USER')]
 final class AvisController extends AbstractController
 {
-    #[Route(name: 'app_avis_index', methods: ['GET'])]
-    public function index(AvisRepository $avisRepository): Response
-    {
-        return $this->render('avis/index.html.twig', [
-            'avis' => $avisRepository->findAll(),
-        ]);
-    }
+    #[Route('/trajet/{id}/noter/{cibleId}', name: 'app_avis_noter', methods: ['GET', 'POST'], requirements: ['id' => '\d+', 'cibleId' => '\d+'])]
+    public function noter(
+        int $id,
+        int $cibleId,
+        Request $request,
+        TrajetsRepository $trajetsRepository,
+        UtilisateursRepository $utilisateursRepository,
+        ReservationRepository $reservationRepository,
+        AvisRepository $avisRepository,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $trajetsRepository->cloturerTrajetsPasses();
+        $trajet = $trajetsRepository->find($id);
+        $cible = $utilisateursRepository->find($cibleId);
+        if (!$trajet || !$cible) {
+            throw $this->createNotFoundException();
+        }
 
-    #[Route('/new', name: 'app_avis_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
+        $auteur = $this->getUser();
+        $conducteur = $trajet->getIdConducteur();
+
+        if ($trajet->getStatut() !== Trajets::STATUTS_TERMINE) {
+            $this->addFlash('error', 'Vous ne pouvez noter qu\'après la fin du trajet.');
+            return $this->redirectToRoute('app_trajets_show', ['id' => $trajet->getId()]);
+        }
+
+        $estPassagerConfirme = fn ($u) => $reservationRepository->findOneBy([
+            'id_trajet' => $trajet,
+            'id_passager' => $u,
+            'statut' => Reservation::STATUS_CONFIRME,
+        ]) !== null;
+
+        $auteurEstConducteur = $auteur->getId() === $conducteur->getId();
+        $cibleEstConducteur = $cible->getId() === $conducteur->getId();
+
+        $autorise = ($auteurEstConducteur && $estPassagerConfirme($cible))
+            || ($cibleEstConducteur && $estPassagerConfirme($auteur));
+        if (!$autorise) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if ($avisRepository->findOneBy(['id_trajet' => $trajet, 'id_auteur' => $auteur, 'id_cible' => $cible])) {
+            $this->addFlash('error', 'Vous avez déjà noté cette personne pour ce trajet.');
+            return $this->redirectToRoute('app_trajets_show', ['id' => $trajet->getId()]);
+        }
+
         $avi = new Avis();
         $form = $this->createForm(AvisType::class, $avi);
         $form->handleRequest($request);
-        $avi->setAuteur($this->getUser());
-        $avi->setDate(new \DateTime());
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $avi->setTrajet($trajet);
+            $avi->setAuteur($auteur);
+            $avi->setCible($cible);
+            $avi->setDate(new \DateTime());
             $entityManager->persist($avi);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_avis_index', [], Response::HTTP_SEE_OTHER);
+            $this->addFlash('success', 'Merci pour votre avis !');
+            return $this->redirectToRoute('app_trajets_show', ['id' => $trajet->getId()]);
         }
 
-        return $this->render('avis/new.html.twig', [
-            'avi' => $avi,
+        return $this->render('avis/noter.html.twig', [
             'form' => $form,
+            'trajet' => $trajet,
+            'cible' => $cible,
         ]);
-    }
-
-    #[Route('/{id}', name: 'app_avis_show', methods: ['GET'])]
-    public function show(Avis $avi): Response
-    {
-        return $this->render('avis/show.html.twig', [
-            'avi' => $avi,
-        ]);
-    }
-
-    #[Route('/{id}/edit', name: 'app_avis_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Avis $avi, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(AvisType::class, $avi);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_avis_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('avis/edit.html.twig', [
-            'avi' => $avi,
-            'form' => $form,
-        ]);
-    }
-
-    #[Route('/{id}', name: 'app_avis_delete', methods: ['POST'])]
-    public function delete(Request $request, Avis $avi, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$avi->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($avi);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('app_avis_index', [], Response::HTTP_SEE_OTHER);
     }
 }

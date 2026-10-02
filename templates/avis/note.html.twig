@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Noter {{ cible.prenom }}{% endblock %}
+
+{% block body %}
+    <h1>Noter {{ cible.prenom }} {{ cible.nom }}</h1>
+    <p>Trajet : {{ trajet.origine }} → {{ trajet.destination }}</p>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn">Envoyer mon avis</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('app_trajets_show', {'id': trajet.id}) }}">Retour au trajet</a>
+{% endblock %}

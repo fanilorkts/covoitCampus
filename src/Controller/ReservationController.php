@@ -55,6 +55,11 @@ final class ReservationController extends AbstractController
                 throw $this->createAccessDeniedException();
             }
 
+            if ($trajet->getDateHeure() <= new \DateTime()) {
+                $this->addFlash('error', 'Ce trajet est déjà passé.');
+                return $this->redirectToRoute('app_trajets_index');
+            }
+
             $user = $this->getUser();
 
             if ($trajet->getStatut() !== Trajets::STATUTS_OUVERT) {
@@ -170,7 +175,7 @@ final class ReservationController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_reservation_show', methods: ['GET'])]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted('ROLE_USER')]
     public function show(Reservation $reservation): Response
     {
         $user = $this->getUser();

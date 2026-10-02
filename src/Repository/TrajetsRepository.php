@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Trajets;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\Utilisateurs;
 
 /**
  * @extends ServiceEntityRepository<Trajets>
@@ -40,7 +41,37 @@ class TrajetsRepository extends ServiceEntityRepository
         }
 
         return $qb->getQuery()->getResult();
+
     }
+
+    public function CloturerTrajets(): void
+    {
+        $trajets = $this->createQueryBuilder('t')
+            ->where('t.statut IN (:actifs)')
+            ->andWhere('t.date_heure <= :now')
+            ->setParameter('actifs', [Trajets::STATUTS_OUVERT, Trajets::STATUTS_COMPLET])
+            ->setParameter('now', new \DateTime())
+            ->getQuery()
+            ->getResult();
+
+        foreach ($trajets as $trajet) {
+            $trajet->setStatut(Trajets::STATUTS_TERMINE);
+        }
+        $this->getEntityManager()->flush();
+    }
+
+    public function countConducteur(Utilisateurs $conducteur): int
+    {
+        return (int) $this->createQueryBuilder('t')
+            ->select('COUNT(t.id)')
+            ->where('t.id_conducteur = :c')
+            ->andWhere('t.statut = :termine')
+            ->setParameter('c', $conducteur)
+            ->setParameter('termine', Trajets::STATUTS_TERMINE)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+}
 
 //    /**
 //     * @return Trajets[] Returns an array of Trajets objects
@@ -66,4 +97,4 @@ class TrajetsRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-}
+

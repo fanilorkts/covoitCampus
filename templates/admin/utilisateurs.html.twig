@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des comptes{% endblock %}
+
+{% block body %}
+    <h1>Gestion des comptes</h1>
+    <table class="table">
+        <thead><tr><th>Nom</th><th>Email</th><th>Rôle</th><th></th></tr></thead>
+        <tbody>
+        {% for u in utilisateurs %}
+            <tr>
+                <td>{{ u.prenom }} {{ u.nom }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.role.value }}</td>
+                <td>
+                    {% if u.id != app.user.id %}
+                        <form method="post" action="{{ path('app_admin_utilisateur_role', {'id': u.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('role' ~ u.id) }}">
+                            <button>{{ u.role.value == 'ROLE_ADMIN' ? 'Retirer admin' : 'Passer admin' }}</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ path('app_admin_index') }}">Retour</a>
+{% endblock %}

@@ -35,6 +35,34 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 20, enumType: Role::class)]
     private Role $role = Role::User;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+private ?string $biographie = null;
+
+#[ORM\Column(length: 255, nullable: true)]
+private ?string $centresInteret = null;
+
+public function getBiographie(): ?string
+{
+    return $this->biographie;
+}
+
+public function setBiographie(?string $biographie): static
+{
+    $this->biographie = $biographie;
+    return $this;
+}
+
+public function getCentresInteret(): ?string
+{
+    return $this->centresInteret;
+}
+
+public function setCentresInteret(?string $centresInteret): static
+{
+    $this->centresInteret = $centresInteret;
+    return $this;
+}
+
     /**
      * @var string The hashed password
      */
@@ -149,4 +177,6 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $data;
     }
+
+    
 }

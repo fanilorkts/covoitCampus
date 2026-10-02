@@ -6,6 +6,7 @@ use App\Entity\Trajets;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 
 class TrajetsType extends AbstractType
 {
@@ -16,6 +17,7 @@ class TrajetsType extends AbstractType
             ->add('destination')
             ->add('date_heure')
             ->add('places_totales')
+            ->add('prix', MoneyType::class, ['currency' => 'EUR'])
         ;
     }
 

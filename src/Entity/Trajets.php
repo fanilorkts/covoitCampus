@@ -36,6 +36,9 @@ class Trajets
     #[ORM\Column(length: 255)]
     private ?string $statut = null;
 
+    #[ORM\Column(type: 'decimal', precision: 6, scale: 2, options: ['default' => 0])]
+    private ?string $prix = '0.00';
+
     #[ORM\ManyToOne (targetEntity: Utilisateurs::class)]
     #[ORM\JoinColumn(name: "id_conducteur", referencedColumnName: "id")
     ]
@@ -116,6 +119,21 @@ class Trajets
         $this->statut = $statut;
 
         return $this;
+    }
+
+    public function getPrix(): ?string
+    {
+
+    return $this->prix;
+
+    }
+
+    public function setPrix(string|float $prix): static
+    {
+
+    $this->prix = number_format((float) $prix, 2, '.', '');
+    return $this;
+    
     }
 
     public function getIdConducteur(): ?Utilisateurs

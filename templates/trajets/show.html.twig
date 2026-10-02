@@ -41,15 +41,22 @@
     {% if trajet.statut == constant ('App\\Entity\\Trajets::STATUTS_OUVERT') and app.user != trajet.idConducteur %}
         <form method="post" action="{{ path('app_reservation_new_trajet', {'id': trajet.id}) }}">
             <input type="hidden" name="_token" value="{{ csrf_token('reserver' ~ trajet.id) }}">
+            <p>Conducteur :
+                <a href="{{ path('app_profil', {'id': trajet.idConducteur.id}) }}">{{ trajet.idConducteur.prenom }} {{ trajet.idConducteur.nom }}</a>
+                ({% if noteConducteur > 0 %}{{ noteConducteur|number_format(1, ',') }}/5{% else %}pas encore noté{% endif %})
+            </p>
             <button class="btn btn-success">Réserver</button>
         </form>
+
     {% endif %}
 
     {% if app.user and app.user == trajet.idConducteur %}
         <h2>Demandes en attente</h2>
         {% for r in reservations %}
             <div>
-                {{ r.idPassager.nom }} - {{ r.statut }} 
+                <a href="{{ path('app_profil', {'id': r.idPassager.id}) }}">{{ r.idPassager.prenom }} {{ r.idPassager.nom }}</a>
+                ({% if notes[r.idPassager.id] > 0 %}{{ notes[r.idPassager.id]|number_format(1, ',') }}/5{% else %}pas encore noté{% endif %})
+                - {{ r.statut }} 
                 {%  if r.statut == constant ('App\\Entity\\Reservation::STATUS_EN_ATTENTE') %}
                     <form method="post" action="{{ path('app_reservation_accepter', {'id': r.id}) }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('accepter' ~ r.id) }}">
@@ -65,6 +72,24 @@
         <p>Aucune demande pour le moment.</p>
         {% endfor %}
     {% endif %}
+    {% if app.user and app.user.id == trajet.idConducteur.id and trajet.statut != constant('App\\Entity\\Trajets::STATUTS_TERMINE') %}
+        <form method="post" action="{{ path('app_trajets_terminer', {'id': trajet.id}) }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('terminer' ~ trajet.id) }}">
+            <button class="btn">Marquer comme terminé</button>
+        </form>
+    {% endif %}
+    {% if app.user and trajet.statut == constant('App\\Entity\\Trajets::STATUTS_TERMINE') %}
+    <h2>Noter</h2>
+    {% for r in reservations %}
+        {% if r.statut == constant('App\\Entity\\Reservation::STATUS_CONFIRME') %}
+            {% if app.user.id == trajet.idConducteur.id %}
+                <a href="{{ path('app_avis_noter', {'id': trajet.id, 'cibleId': r.idPassager.id}) }}">Noter {{ r.idPassager.prenom }}</a>
+            {% elseif app.user.id == r.idPassager.id %}
+                <a href="{{ path('app_avis_noter', {'id': trajet.id, 'cibleId': trajet.idConducteur.id}) }}">Noter le conducteur</a>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
     <a href="{{ path('app_trajets_index') }}">back to list</a>
 
     <a href="{{ path('app_trajets_edit', {'id': trajet.id}) }}">edit</a>

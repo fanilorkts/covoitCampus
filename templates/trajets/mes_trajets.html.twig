@@ -4,6 +4,14 @@
 
 {% block body %}
     <h1>Mes Trajets</h1>
+    <p>Trajets réalisés : <strong>{{ nbRealises }}</strong></p>
+<p>Passager le plus fréquent :
+    {% if passagerFrequent %}
+        {{ passagerFrequent.prenom }} {{ passagerFrequent.nom }} ({{ nbFois }} trajet{{ nbFois > 1 ? 's' : '' }})
+    {% else %}
+        aucun pour le moment
+    {% endif %}
+</p>
 
     <table class="table">
         <thead>
