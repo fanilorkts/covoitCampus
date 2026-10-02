@@ -36,7 +36,7 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
     private Role $role = Role::User;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-private ?string $biographie = null;
+    private ?string $biographie = null;
 
 #[ORM\Column(length: 255, nullable: true)]
 private ?string $centresInteret = null;
