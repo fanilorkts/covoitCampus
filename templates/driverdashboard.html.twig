@@ -43,10 +43,10 @@
                 {% for r in requests %}
                     <article class="request-card">
                         <div>
-                            <strong>{{ r.passager.prenom }} wants a seat</strong>
+                            <strong>{{ r.idPassager.prenom }} wants a seat</strong>
                             <small>
-                                {{ r.trajet.origine }} → {{ r.trajet.destination }}<br>
-                                {{ r.trajet.dateHeure|date('d/m/Y H:i') }}
+                                {{ r.idTrajet.origine }} → {{ r.idTrajet.destination }}<br>
+                                {{ r.idTrajet.dateHeure|date('d/m/Y H:i') }}
                             </small>
                         </div>
                         <div class="request-card__actions">
@@ -127,7 +127,7 @@
                     <article class="review-card">
                         <div>
                             <strong>{{ a.commentaire }}</strong>
-                            <small>From {{ a.auteur.prenom }}</small>
+                            <small>From {{ a.idAuteur.prenom }}</small>
                         </div>
                         <span class="stars" aria-label="{{ a.note }} sur 5">
                             {% for i in 1..a.note %}★{% endfor %}
@@ -149,7 +149,7 @@
                 <div class="field">Volkswagen</div>
                 <div class="field">Golf</div>
                 <div class="field">2020</div>
-                <div class="vehicle__photo">🚗</div>
+                <div class="vehicle__icon">icon</div>
                 <div class="field">XX-XXX-XX</div>
                 <div class="field">5 seats</div>
                 <div class="field">White</div>

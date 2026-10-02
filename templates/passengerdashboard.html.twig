@@ -43,15 +43,15 @@
         <section class="dashboard__full">
             <div class="section-head"><h2>Next ride</h2></div>
             {% if next %}
-                {% set day = next.trajet.dateHeure|date('Y-m-d') %}
+                {% set day = next.idTrajet.dateHeure|date('Y-m-d') %}
                 <div class="next-ride">
                     <article class="next-ride__main">
                         <span class="pill">
-                            {% if day == today %}Today{% elseif day == tomorrow %}Tomorrow{% else %}{{ next.trajet.dateHeure|date('d/m/Y') }}{% endif %}
+                            {% if day == today %}Today{% elseif day == tomorrow %}Tomorrow{% else %}{{ next.idTrajet.dateHeure|date('d/m/Y') }}{% endif %}
                         </span>
-                        <div class="next-ride__route">{{ next.trajet.origine }} → {{ next.trajet.destination }}</div>
+                        <div class="next-ride__route">{{ next.idTrajet.origine }} → {{ next.idTrajet.destination }}</div>
                         <div class="next-ride__meta">
-                            {{ next.trajet.dateHeure|date('H:i') }} with {{ next.trajet.conducteur.prenom }}
+                            {{ next.idTrajet.dateHeure|date('H:i') }} with {{ next.idTrajet.idConducteur.prenom }}
                         </div>
                         {# TODO : lien vers la page détail du trajet #}
                         <a class="btn btn--light" href="#">View ride</a>
@@ -62,7 +62,7 @@
                             <small>CO2 saved on this ride</small>
                         </div>
                         <div class="highlight">
-                            <strong>{{ next.trajet.prix is not null ? next.trajet.prix ~ '€' : '–' }}</strong>
+                            <strong>{{ next.idTrajet.prix is not null ? next.idTrajet.prix ~ '€' : '–' }}</strong>
                             <small>Price of this ride</small>
                         </div>
                     </div>
@@ -88,8 +88,8 @@
             <h3 class="subhead">Recent history</h3>
             {% for h in history %}
                 <div class="history__item">
-                    <strong>{{ h.trajet.origine }} → {{ h.trajet.destination }}</strong>
-                    <small>With {{ h.trajet.conducteur.prenom }} · {{ h.trajet.dateHeure|date('d/m/Y H:i') }}</small>
+                    <strong>{{ h.idTrajet.origine }} → {{ h.idTrajet.destination }}</strong>
+                    <small>With {{ h.idTrajet.idConducteur.prenom }} · {{ h.idTrajet.dateHeure|date('d/m/Y H:i') }}</small>
                 </div>
             {% else %}
                 <p class="page-subtitle">No rides yet.</p>
@@ -104,10 +104,10 @@
                     <article class="ride-card">
                         <div>
                             <span class="badge badge--pending">Pending</span>
-                            <div class="ride-card__route">{{ r.trajet.origine }} → {{ r.trajet.destination }}</div>
-                            <div class="ride-card__meta">With {{ r.trajet.conducteur.prenom }}</div>
+                            <div class="ride-card__route">{{ r.idTrajet.origine }} → {{ r.idTrajet.destination }}</div>
+                            <div class="ride-card__meta">With {{ r.idTrajet.idConducteur.prenom }}</div>
                         </div>
-                        <div class="ride-card__date">{{ r.trajet.dateHeure|date('d/m/Y') }}<br>{{ r.trajet.dateHeure|date('H:i') }}</div>
+                        <div class="ride-card__date">{{ r.idTrajet.dateHeure|date('d/m/Y') }}<br>{{ r.idTrajet.dateHeure|date('H:i') }}</div>
                     </article>
                 {% else %}
                     <p class="empty-card">No pending requests.</p>
