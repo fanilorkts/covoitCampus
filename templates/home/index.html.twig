@@ -1,0 +1,230 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home - CovoitCampus{% endblock %}
+
+{% block stylesheets %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="{{ asset('styles/home.css') }}">
+{% endblock %}
+
+{% block body %}
+
+{# ---------- Nav + Hero ---------- #}
+<div class="home-container">
+    <nav class="home-nav">
+        <a href="{{ path('app_home') }}" class="home-nav__logo">CovoitCampus</a>
+        <div class="home-nav__links">
+            {% if app.user %}
+                <a href="{{ path('app_trajets_index') }}">Rides</a>
+                <a href="{{ logout_path() }}" class="btn btn--primary">Log out</a>
+            {% else %}
+                <a href="{{ path('app_login') }}">Log in</a>
+                <a href="{{ path('app_register') }}" class="btn btn--primary">Sign up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <section class="hero">
+        <span class="hero__blob hero__blob--1"></span>
+        <span class="hero__blob hero__blob--2"></span>
+
+        <div>
+            <h1 class="hero__title">
+                <span class="hero__title-underline">Share the ride.</span>
+                <span>Split the cost.</span>
+                <span class="hero__title-accent">Save the planet.</span>
+            </h1>
+            <p class="hero__subtitle">
+                Connect with people heading your way for cheaper, greener, friendly commutes.
+            </p>
+        </div>
+
+        <form class="search" method="get" action="{{ path('app_trajets_index') }}">
+            <label class="search__field">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                <input class="search__input" type="text" name="origine" placeholder="From...">
+            </label>
+            <label class="search__field">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                <input class="search__input" type="text" name="destination" placeholder="To...">
+            </label>
+            <button type="submit" class="btn btn--primary">Search</button>
+        </form>
+    </section>
+</div>
+
+{# ---------- Features ---------- #}
+<section class="home-container">
+    <div class="bento">
+        <div class="bento__card bento__card--dark">
+            <svg class="bento__icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 9.3 8 11 4.6-1.7 8-6 8-11V5l-8-3Z"/></svg>
+            <h2 class="bento__title">Verified drivers<br>Every time</h2>
+            <p class="bento__text">ID and license checks on every profile before they ever get behind the wheel.</p>
+        </div>
+
+        <div class="bento__card bento__card--light"><span>38% less carbon per commute</span></div>
+        <div class="bento__card bento__card--accent"><span>Fair-share pricing, split automatically</span></div>
+    </div>
+
+    <div class="stats">
+        <div class="stats__card">
+            <p class="stats__value">2,400+</p>
+            <p class="stats__label">Rides shared on campus</p>
+        </div>
+        <div class="stats__card">
+            <p class="stats__value">4.8 / 5</p>
+            <p class="stats__label">Average driver rating</p>
+        </div>
+        <div class="stats__card">
+            <p class="stats__value">€45</p>
+            <p class="stats__label">Saved per student each month</p>
+        </div>
+    </div>
+</section>
+
+{# ---------- How it works ---------- #}
+<section class="home-container">
+    <div class="section-head">
+        <h2 class="section-head__title">How it works</h2>
+        <p class="section-head__text">Whether you're looking for a ride or offering one, it only takes a few steps.</p>
+    </div>
+
+    <div class="hiw">
+        <input class="hiw__radio" type="radio" name="role" id="role-passenger" checked>
+        <input class="hiw__radio" type="radio" name="role" id="role-driver">
+
+        <div class="hiw__toggle">
+            <label for="role-passenger">As Passenger</label>
+            <label for="role-driver">As Driver</label>
+        </div>
+
+        <div class="hiw__steps hiw__steps--passenger">
+            <div>
+                <div class="hiw__circle hiw__circle--1">1</div>
+                <h3 class="hiw__step-title">Search a ride</h3>
+                <p class="hiw__step-text">Enter your departure, destination and date to find open rides.</p>
+            </div>
+            <div>
+                <div class="hiw__circle hiw__circle--2">2</div>
+                <h3 class="hiw__step-title">Book your seat</h3>
+                <p class="hiw__step-text">Send a request and wait for the driver to confirm.</p>
+            </div>
+            <div>
+                <div class="hiw__circle hiw__circle--3">3</div>
+                <h3 class="hiw__step-title">Meet and ride</h3>
+                <p class="hiw__step-text">Meet your driver at the pickup point and split the cost automatically.</p>
+            </div>
+        </div>
+
+        <div class="hiw__steps hiw__steps--driver">
+            <div>
+                <div class="hiw__circle hiw__circle--1">1</div>
+                <h3 class="hiw__step-title">Publish your ride</h3>
+                <p class="hiw__step-text">Set your route, date, available seats and price.</p>
+            </div>
+            <div>
+                <div class="hiw__circle hiw__circle--2">2</div>
+                <h3 class="hiw__step-title">Accept requests</h3>
+                <p class="hiw__step-text">Review passengers and their ratings, then confirm or decline.</p>
+            </div>
+            <div>
+                <div class="hiw__circle hiw__circle--3">3</div>
+                <h3 class="hiw__step-title">Drive and get rated</h3>
+                <p class="hiw__step-text">Pick up your passengers and build your reputation after the ride.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ---------- Testimonials ---------- #}
+<section class="home-container">
+    <div class="section-head">
+        <h2 class="section-head__title">Loved by riders and drivers</h2>
+        <p class="section-head__text">Real stories from the CovoitCampus community.</p>
+    </div>
+
+    <div class="reviews">
+        <article class="review">
+            <p class="review__quote">“I found a ride to the train station every Friday. Cheaper than the bus and way friendlier.”</p>
+            <div class="review__author">
+                <span class="avatar">LR</span>
+                <div>
+                    <p class="review__name">Lea R.</p>
+                    <p class="review__role">Passenger</p>
+                </div>
+            </div>
+        </article>
+
+        <article class="review review--dark">
+            <p class="review__quote">“My car was always half empty. Now the fuel is covered and I meet great people.”</p>
+            <div class="review__author">
+                <span class="avatar avatar--terracotta">SF</span>
+                <div>
+                    <p class="review__name">Sam F.</p>
+                    <p class="review__role">Driver</p>
+                </div>
+            </div>
+        </article>
+
+        <article class="review">
+            <p class="review__quote">“The ratings make all the difference. I always know who I'm riding with.”</p>
+            <div class="review__author">
+                <span class="avatar">KM</span>
+                <div>
+                    <p class="review__name">Karim M.</p>
+                    <p class="review__role">Passenger &amp; Driver</p>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+
+{# ---------- Footer ---------- #}
+<footer class="footer">
+    <div class="home-container">
+        <div class="footer__grid">
+            <div>
+                <span class="footer__logo">CovoitCampus</span>
+                <div class="footer__socials">
+                    <a href="#" class="footer__social" aria-label="X">X</a>
+                    <a href="#" class="footer__social" aria-label="Instagram">IG</a>
+                    <a href="#" class="footer__social" aria-label="YouTube">YT</a>
+                    <a href="#" class="footer__social" aria-label="LinkedIn">in</a>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="footer__title">Rides</h4>
+                <ul class="footer__list">
+                    <li><a href="{{ path('app_trajets_index') }}">Find a ride</a></li>
+                    <li><a href="{{ path('app_trajets_new') }}">Offer a ride</a></li>
+                    <li><a href="#">My bookings</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="footer__title">Community</h4>
+                <ul class="footer__list">
+                    <li><a href="#">Reviews</a></li>
+                    <li><a href="#">Safety</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="footer__title">Account</h4>
+                <ul class="footer__list">
+                    <li><a href="{{ path('app_login') }}">Log in</a></li>
+                    <li><a href="{{ path('app_register') }}">Sign up</a></li>
+                    <li><a href="#">Support</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <p class="footer__bottom">© 2026 CovoitCampus. Share the ride. Split the cost. Save the planet.</p>
+    </div>
+</footer>
+
+{% endblock %}

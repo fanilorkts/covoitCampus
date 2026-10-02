@@ -1,15 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Inscription{% endblock %}
+{% block title %}Sign up{% endblock %}
 
 {% block stylesheets %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600&display=swap">
     <link rel="stylesheet" href="{{ asset('styles/auth.css') }}">
 {% endblock %}
 
 {% block body %}
 <div class="auth-page">
 
-    {# Panneau gauche #}
+    {# Left panel #}
     <aside class="auth-brand">
         <span class="auth-brand__circle auth-brand__circle--1"></span>
         <span class="auth-brand__circle auth-brand__circle--2"></span>
@@ -18,20 +21,20 @@
         <div class="auth-brand__content">
             <span class="auth-brand__logo">CovoitCampus</span>
             <h2 class="auth-brand__title">
-                Voyagez ensemble,<br>
-                <span class="auth-brand__title-accent">simplement.</span>
+                Travel together,<br>
+                <span class="auth-brand__title-accent">simply.</span>
             </h2>
             <p class="auth-brand__text">
-                Rejoignez la communauté de covoiturage du campus.
+                Join the campus carpooling community.
             </p>
         </div>
     </aside>
 
-    {# Panneau droit #}
+    {# Right panel #}
     <main class="auth-form-panel">
         <div class="auth-form">
-            <h1 class="auth-form__title">Inscription</h1>
-            <p class="auth-form__subtitle">Créez votre compte pour commencer.</p>
+            <h1 class="auth-form__title">Sign up</h1>
+            <p class="auth-form__subtitle">Create your account to get started.</p>
 
             {% if registrationForm.vars.errors|length %}
                 <div class="auth-alert">{{ form_errors(registrationForm) }}</div>
@@ -39,7 +42,7 @@
 
             {{ form_start(registrationForm) }}
 
-                {# Un même bloc pour tous les champs texte : le label vient du FormType #}
+                {# One block for all text fields: the label comes from the FormType #}
                 {% for name in ['nom', 'prenom', 'dateNaissance', 'email', 'plainPassword'] %}
                     {% set field = registrationForm[name] %}
                     <div class="auth-field">
@@ -52,13 +55,15 @@
                 <div class="auth-field auth-field--checkbox">
                     <label class="auth-checkbox">
                         {{ form_widget(registrationForm.agreeTerms) }}
-                        <span>J'accepte les conditions d'utilisation</span>
+                        <span>I agree to the terms of use</span>
                     </label>
                     {{ form_errors(registrationForm.agreeTerms) }}
                 </div>
 
-                <button type="submit" class="auth-submit">S'inscrire</button>
+                <button type="submit" class="auth-submit">Sign up</button>
             {{ form_end(registrationForm) }}
+
+            <p class="auth-switch">Already have an account? <a href="{{ path('app_login') }}">Log in</a></p>
         </div>
     </main>
 
