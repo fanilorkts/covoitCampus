@@ -31,38 +31,38 @@ final class PassengerDashboardController extends AbstractController
 
         // Prochain trajet confirmé
         $next = $reservations->createQueryBuilder('r')
-            ->join('r.trajet', 't')
-            ->andWhere('r.passager = :u')
+            ->join('r.id_trajet', 't')
+            ->andWhere('r.id_passager = :u')
             ->andWhere('r.statut = :statut')
-            ->andWhere('t.dateHeure >= :now')
+            ->andWhere('t.date_heure >= :now')
             ->setParameter('u', $user)
             ->setParameter('statut', 'Confirmée')
             ->setParameter('now', new \DateTimeImmutable())
-            ->orderBy('t.dateHeure', 'ASC')
+            ->orderBy('t.date_heure', 'ASC')
             ->setMaxResults(1)
             ->getQuery()->getOneOrNullResult();
 
         // Demandes en attente
         $pending = $reservations->createQueryBuilder('r')
-            ->join('r.trajet', 't')
-            ->andWhere('r.passager = :u')
+            ->join('r.id_trajet', 't')
+            ->andWhere('r.id_passager = :u')
             ->andWhere('r.statut = :statut')
             ->setParameter('u', $user)
             ->setParameter('statut', 'En attente')
-            ->orderBy('t.dateHeure', 'ASC')
+            ->orderBy('t.date_heure', 'ASC')
             ->setMaxResults(3)
             ->getQuery()->getResult();
 
         // Historique récent : trajets terminés auxquels j'ai participé
         $history = $reservations->createQueryBuilder('r')
-            ->join('r.trajet', 't')
-            ->andWhere('r.passager = :u')
+            ->join('r.id_trajet', 't')
+            ->andWhere('r.id_passager = :u')
             ->andWhere('r.statut = :statut')
             ->andWhere('t.statut = :termine')
             ->setParameter('u', $user)
             ->setParameter('statut', 'Confirmée')
             ->setParameter('termine', 'Terminé')
-            ->orderBy('t.dateHeure', 'DESC')
+            ->orderBy('t.date_heure', 'DESC')
             ->setMaxResults(2)
             ->getQuery()->getResult();
 
@@ -70,8 +70,8 @@ final class PassengerDashboardController extends AbstractController
         $routes = $em->createQueryBuilder()
             ->select('t.origine AS origine, t.destination AS destination, COUNT(r.id) AS n')
             ->from(Reservation::class, 'r')
-            ->join('r.trajet', 't')
-            ->andWhere('r.passager = :u')
+            ->join('r.id_trajet', 't')
+            ->andWhere('r.id_passager = :u')
             ->andWhere('r.statut = :statut')
             ->setParameter('u', $user)
             ->setParameter('statut', 'Confirmée')
@@ -83,8 +83,8 @@ final class PassengerDashboardController extends AbstractController
         // Statistiques
         $ridesTaken = (int) $reservations->createQueryBuilder('r')
             ->select('COUNT(r.id)')
-            ->join('r.trajet', 't')
-            ->andWhere('r.passager = :u')
+            ->join('r.id_trajet', 't')
+            ->andWhere('r.id_passager = :u')
             ->andWhere('r.statut = :statut')
             ->andWhere('t.statut = :termine')
             ->setParameter('u', $user)
@@ -95,8 +95,8 @@ final class PassengerDashboardController extends AbstractController
         // Somme des prix des trajets terminés (nécessite la colonne prix sur Trajet)
         $spent = (float) $reservations->createQueryBuilder('r')
             ->select('COALESCE(SUM(t.prix), 0)')
-            ->join('r.trajet', 't')
-            ->andWhere('r.passager = :u')
+            ->join('r.id_trajet', 't')
+            ->andWhere('r.id_passager = :u')
             ->andWhere('r.statut = :statut')
             ->andWhere('t.statut = :termine')
             ->setParameter('u', $user)
@@ -106,11 +106,11 @@ final class PassengerDashboardController extends AbstractController
 
         $rating = $em->getRepository(Avis::class)->createQueryBuilder('a')
             ->select('AVG(a.note)')
-            ->andWhere('a.cible = :u')
+            ->andWhere('a.id_cible = :u')
             ->setParameter('u', $user)
             ->getQuery()->getSingleScalarResult();
 
-        return $this->render('dashboard/passenger.html.twig', [
+        return $this->render('passengerdashboard.html.twig', [
             'user' => $user,
             'next' => $next,
             'pending' => $pending,

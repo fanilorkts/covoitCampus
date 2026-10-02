@@ -1,0 +1,187 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Driver dashboard{% endblock %}
+
+{% block body %}
+<div class="container">
+
+    <h1 class="page-title">Welcome back, {{ user.prenom }}!</h1>
+    <p class="page-subtitle">Here's what's happening with your rides</p>
+
+    <div class="dashboard">
+
+        {# ---------- Statistiques ---------- #}
+        <section>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-card__icon">🚗</div>
+                    <div class="stat-card__value">{{ stats.rides }}</div>
+                    <div class="stat-card__label">Rides shared</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card__icon">€</div>
+                    <div class="stat-card__value">{{ stats.money|number_format(0, ',', ' ') }}€</div>
+                    <div class="stat-card__label">Money shared</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card__icon">🍃</div>
+                    <div class="stat-card__value">{{ stats.co2 }}kg</div>
+                    <div class="stat-card__label">CO2 saved</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card__icon">★</div>
+                    <div class="stat-card__value">{{ stats.rating ?? '–' }}</div>
+                    <div class="stat-card__label">Your driver rating</div>
+                </div>
+            </div>
+        </section>
+
+        {# ---------- Demandes de réservation ---------- #}
+        <section>
+            <div class="section-head"><h2>Ride requests</h2></div>
+            <div class="request-list">
+                {% for r in requests %}
+                    <article class="request-card">
+                        <div>
+                            <strong>{{ r.passager.prenom }} wants a seat</strong>
+                            <small>
+                                {{ r.trajet.origine }} → {{ r.trajet.destination }}<br>
+                                {{ r.trajet.dateHeure|date('d/m/Y H:i') }}
+                            </small>
+                        </div>
+                        <div class="request-card__actions">
+                            {# TODO : brancher sur tes routes d'acceptation / refus #}
+                            <a class="btn btn--accept" href="#">Accept</a>
+                            <a class="btn btn--ghost" href="#">Decline</a>
+                        </div>
+                    </article>
+                {% else %}
+                    <p class="page-subtitle">No pending requests.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        {# ---------- Trajets à venir ---------- #}
+        <section class="dashboard__full">
+            <div class="section-head">
+                <h2>Upcoming rides</h2>
+                <a href="#">View all</a>
+            </div>
+            <div class="ride-list">
+                {% for t in upcoming %}
+                    <div class="ride-row">
+                        <article class="ride-card">
+                            <div>
+                                <span class="badge {{ t.statut == 'Complet' ? 'badge--pending' : '' }}">
+                                    {{ t.statut == 'Complet' ? 'Full' : 'Open' }}
+                                </span>
+                                <div class="ride-card__route">{{ t.origine }} → {{ t.destination }}</div>
+                                <div class="ride-card__meta">{{ t.placesRestantes }} seats left</div>
+                            </div>
+                            <div class="ride-card__date">{{ t.dateHeure|date('d/m/Y') }}<br>{{ t.dateHeure|date('H:i') }}</div>
+                        </article>
+                        <div class="ride-price">
+                            <span>{{ t.prix is not null ? t.prix ~ '€' : '–' }}</span>
+                            <div class="ride-price__actions">
+                                {# TODO : brancher sur tes routes d'édition / annulation #}
+                                <a class="btn btn--edit" href="#">Edit</a>
+                                <a class="btn btn--ghost" href="#">Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="page-subtitle">No upcoming rides.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        {# ---------- Trajets passés ---------- #}
+        <section>
+            <div class="section-head">
+                <h2>Past rides</h2>
+                <a href="#">View all</a>
+            </div>
+            <div class="ride-list">
+                {% for t in past %}
+                    <article class="ride-card">
+                        <div>
+                            <span class="badge">Done</span>
+                            <div class="ride-card__route">{{ t.origine }} → {{ t.destination }}</div>
+                        </div>
+                        <div class="ride-card__date">{{ t.dateHeure|date('d/m/Y') }}<br>{{ t.dateHeure|date('H:i') }}</div>
+                    </article>
+                {% else %}
+                    <p class="page-subtitle">No past rides yet.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        {# ---------- Avis ---------- #}
+        <section>
+            <div class="section-head">
+                <h2>Reviews</h2>
+                <a href="#">View all</a>
+            </div>
+            <div class="review-list">
+                {% for a in reviews %}
+                    <article class="review-card">
+                        <div>
+                            <strong>{{ a.commentaire }}</strong>
+                            <small>From {{ a.auteur.prenom }}</small>
+                        </div>
+                        <span class="stars" aria-label="{{ a.note }} sur 5">
+                            {% for i in 1..a.note %}★{% endfor %}
+                        </span>
+                    </article>
+                {% else %}
+                    <p class="page-subtitle">No reviews yet.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        {# ---------- Véhicule (statique : pas encore de données en base) ---------- #}
+        <section>
+            <div class="section-head">
+                <h2>Vehicle</h2>
+                <span class="badge">Verified</span>
+            </div>
+            <div class="vehicle">
+                <div class="field">Volkswagen</div>
+                <div class="field">Golf</div>
+                <div class="field">2020</div>
+                <div class="vehicle__photo">🚗</div>
+                <div class="field">XX-XXX-XX</div>
+                <div class="field">5 seats</div>
+                <div class="field">White</div>
+            </div>
+        </section>
+
+        {# ---------- Profil ---------- #}
+        <section>
+            <div class="section-head">
+                <h2>Profile</h2>
+                <a href="#">View all</a>
+            </div>
+            <div class="profile">
+                <div class="profile__card">
+                    <span class="avatar avatar--lg">{{ user.prenom|first|upper }}</span>
+                    <strong>{{ user.prenom }} {{ user.nom }}</strong>
+                    <dl>
+                        <dt>Date of birth</dt>
+                        <dd>{{ user.dateNaissance ? user.dateNaissance|date('d/m/Y') : '–' }}</dd>
+                    </dl>
+                </div>
+                <div class="profile__note">
+                    <h3>Bio</h3>
+                    {{ user.biographie ?? '–' }}
+                </div>
+                <div class="profile__note">
+                    <h3>Interests</h3>
+                    {{ user.centresInteret ?? '–' }}
+                </div>
+            </div>
+        </section>
+
+    </div>
+</div>
+{% endblock %}

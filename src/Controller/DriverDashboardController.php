@@ -14,9 +14,9 @@ use Symfony\Component\Routing\Attribute\Route;
  * Dashboard conducteur (maquette Figma "Driver Dashboard").
  *
  * Hypothèses sur tes entités (à adapter si tes noms diffèrent) :
- *  - Trajet      : conducteur, dateHeure, statut, prix, origine, destination, placesRestantes
- *  - Reservation : trajet, passager, statut ('Confirmée', 'En attente', 'Refusée')
- *  - Avis        : cible, auteur, note, commentaire, date
+ *  - Trajets     : id_conducteur, date_heure, statut, prix, origine, destination, places_restantes
+ *  - Reservation : id_trajet, id_passager, statut, date_reservation
+ *  - Avis        : id_trajet, id_auteur, id_cible, note, commentaire, date
  */
 final class DriverDashboardController extends AbstractController
 {
@@ -35,40 +35,40 @@ final class DriverDashboardController extends AbstractController
 
         // Trajets à venir (Ouvert ou Complet), les 3 prochains
         $upcoming = $em->getRepository(Trajets::class)->createQueryBuilder('t')
-            ->andWhere('t.conducteur = :u')
+            ->andWhere('t.id_conducteur = :u')
             ->andWhere('t.statut IN (:statuts)')
-            ->andWhere('t.dateHeure >= :now')
+            ->andWhere('t.date_heure >= :now')
             ->setParameter('u', $user)
             ->setParameter('statuts', ['Ouvert', 'Complet'])
             ->setParameter('now', new \DateTimeImmutable())
-            ->orderBy('t.dateHeure', 'ASC')
+            ->orderBy('t.date_heure', 'ASC')
             ->setMaxResults(3)
             ->getQuery()->getResult();
 
         // Trajets terminés, les 2 derniers
         $past = $em->getRepository(Trajets::class)->createQueryBuilder('t')
-            ->andWhere('t.conducteur = :u')
+            ->andWhere('t.id_conducteur = :u')
             ->andWhere('t.statut = :statut')
             ->setParameter('u', $user)
             ->setParameter('statut', 'Terminé')
-            ->orderBy('t.dateHeure', 'DESC')
+            ->orderBy('t.date_heure', 'DESC')
             ->setMaxResults(2)
             ->getQuery()->getResult();
 
         // Demandes de réservation en attente sur mes trajets
         $requests = $em->getRepository(Reservation::class)->createQueryBuilder('r')
-            ->join('r.trajet', 't')
-            ->andWhere('t.conducteur = :u')
+            ->join('r.id_trajet', 't')
+            ->andWhere('t.id_conducteur = :u')
             ->andWhere('r.statut = :statut')
             ->setParameter('u', $user)
             ->setParameter('statut', 'En attente')
-            ->orderBy('r.dateReservation', 'DESC')
+            ->orderBy('r.date_reservation', 'DESC')
             ->setMaxResults(3)
             ->getQuery()->getResult();
 
         // Derniers avis reçus
         $reviews = $em->getRepository(Avis::class)->createQueryBuilder('a')
-            ->andWhere('a.cible = :u')
+            ->andWhere('a.id_cible = :u')
             ->setParameter('u', $user)
             ->orderBy('a.date', 'DESC')
             ->setMaxResults(2)
@@ -77,7 +77,7 @@ final class DriverDashboardController extends AbstractController
         // Statistiques
         $ridesShared = (int) $em->getRepository(Trajets::class)->createQueryBuilder('t')
             ->select('COUNT(t.id)')
-            ->andWhere('t.conducteur = :u')
+            ->andWhere('t.id_conducteur = :u')
             ->andWhere('t.statut = :statut')
             ->setParameter('u', $user)
             ->setParameter('statut', 'Terminé')
@@ -85,8 +85,8 @@ final class DriverDashboardController extends AbstractController
 
         $passengers = (int) $em->getRepository(Reservation::class)->createQueryBuilder('r')
             ->select('COUNT(r.id)')
-            ->join('r.trajet', 't')
-            ->andWhere('t.conducteur = :u')
+            ->join('r.id_trajet', 't')
+            ->andWhere('t.id_conducteur = :u')
             ->andWhere('r.statut = :statut')
             ->setParameter('u', $user)
             ->setParameter('statut', 'Confirmée')
@@ -95,8 +95,8 @@ final class DriverDashboardController extends AbstractController
         // Somme des prix des places confirmées (nécessite la colonne prix sur Trajet)
         $money = (float) $em->getRepository(Reservation::class)->createQueryBuilder('r')
             ->select('COALESCE(SUM(t.prix), 0)')
-            ->join('r.trajet', 't')
-            ->andWhere('t.conducteur = :u')
+            ->join('r.id_trajet', 't')
+            ->andWhere('t.id_conducteur = :u')
             ->andWhere('r.statut = :statut')
             ->setParameter('u', $user)
             ->setParameter('statut', 'Confirmée')
@@ -104,11 +104,11 @@ final class DriverDashboardController extends AbstractController
 
         $rating = $em->getRepository(Avis::class)->createQueryBuilder('a')
             ->select('AVG(a.note)')
-            ->andWhere('a.cible = :u')
+            ->andWhere('a.id_cible = :u')
             ->setParameter('u', $user)
             ->getQuery()->getSingleScalarResult();
 
-        return $this->render('dashboard/driver.html.twig', [
+        return $this->render('driverdashboard.html.twig', [
             'user' => $user,
             'upcoming' => $upcoming,
             'past' => $past,
