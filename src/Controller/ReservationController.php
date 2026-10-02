@@ -145,9 +145,7 @@ final class ReservationController extends AbstractController
     #[Route('/{id}/annuler', name: 'app_reservation_annuler', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function annuler(Reservation $reservation, Request $request, EntityManagerInterface $entityManager): Response
-    
     {
-
         if ($reservation->getIdPassager() !== $this->getUser()
             || !$this->isCsrfTokenValid('annuler'.$reservation->getId(), $request->getPayload()->getString('_token'))) {
             throw $this->createAccessDeniedException();
@@ -170,7 +168,6 @@ final class ReservationController extends AbstractController
         $this->addFlash('success', 'Votre réservation a été annulée.');
         return $this->redirectToRoute('app_reservation_mes_reservations');
     }
-
 
     #[Route('/{id}', name: 'app_reservation_show', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]

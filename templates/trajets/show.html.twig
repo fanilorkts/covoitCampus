@@ -50,7 +50,7 @@
         {% for r in reservations %}
             <div>
                 {{ r.idPassager.nom }} - {{ r.statut }} 
-                {%  if r.status == constant ('App\\Entity\\Reservation::STATUS_EN_ATTENTE') %}
+                {%  if r.statut == constant ('App\\Entity\\Reservation::STATUS_EN_ATTENTE') %}
                     <form method="post" action="{{ path('app_reservation_accepter', {'id': r.id}) }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('accepter' ~ r.id) }}">
                         <button class="btn btn-success">Accepter</button>

@@ -86,30 +86,4 @@ class Reservation
         return $this;
     }
 
-    #[Route('/{id}/annuler', name: 'app_reservation_annuler', methods: ['POST'], requirements: ['id' => '\d+'])]
-#[IsGranted('ROLE_USER')]
-public function annuler(Reservation $reservation, Request $request, EntityManagerInterface $entityManager): Response
-{
-    if ($reservation->getIdPassager() !== $this->getUser()
-        || !$this->isCsrfTokenValid('annuler'.$reservation->getId(), $request->getPayload()->getString('_token'))) {
-        throw $this->createAccessDeniedException();
-    }
-
-    $trajet = $reservation->getIdTrajet();
-
-    if ($trajet->getStatut() === Trajets::STATUTS_TERMINE) {
-        $this->addFlash('error', 'Ce trajet est terminé, impossible d\'annuler.');
-        return $this->redirectToRoute('app_reservation_mes_reservations');
-    }
-
-    if ($reservation->getStatut() === Reservation::STATUS_CONFIRME) {
-        $trajet->libererPlace();
-    }
-
-    $entityManager->remove($reservation);
-    $entityManager->flush();
-
-    $this->addFlash('success', 'Votre réservation a été annulée.');
-    return $this->redirectToRoute('app_reservation_mes_reservations');
-}
 }

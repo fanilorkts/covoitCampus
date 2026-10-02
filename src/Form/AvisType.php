@@ -6,6 +6,9 @@ use App\Entity\Avis;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\Utilisateurs;
+use App\Entity\Trajets;
 
 class AvisType extends AbstractType
 {
@@ -15,9 +18,9 @@ class AvisType extends AbstractType
             ->add('note')
             ->add('commentaire')
             ->add('date')
-            ->add('id_trajet')
-            ->add('id_auteur')
-            ->add('id_cible')
+            ->add('getTrajet')
+            ->add('trajet', EntityType::class, ['class' => Trajets::class, 'choice_label' => 'origine'])
+            ->add('cible', EntityType::class, ['class' => Utilisateurs::class, 'choice_label' => 'nom'])
         ;
     }
 

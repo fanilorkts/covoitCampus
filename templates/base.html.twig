@@ -19,8 +19,8 @@
         {% endif %}
     </head>
     <body>
-        {%  for type message in app.flashes %}
-            {%  for message in message %}
+        {% for type, messages in app.flashes %}
+            {% for message in messages %}
                 <p class="flash flash-{{ type }}">{{ message }}</p>
             {% endfor %}
         {% endfor %}
