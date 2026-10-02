@@ -1,0 +1,453 @@
+/* ============================================================
+   BackSeat / CoVoiturage Campus : feuille de style
+   Basée sur la maquette Figma "Backseat - Driver Dashboard".
+   Couleurs estimées depuis la capture : à ajuster dans :root
+   si tu as les valeurs exactes dans Figma (panneau Design).
+   Emplacement conseillé : public/css/app.css
+   Dans base.html.twig : <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+   ============================================================ */
+
+:root {
+    --bg: #f9f7f2;          /* fond crème de la page */
+    --surface: #ffffff;     /* cartes blanches */
+    --forest: #2c3b30;      /* cartes vert foncé (demandes, avis, profil) */
+    --forest-soft: #3a4b3e;
+    --sage: #5b8a62;        /* bouton Accepter, liens */
+    --sage-pale: #d3e3d2;   /* pastille "Confirmed" */
+    --clay: #cd7f5a;        /* cartes terracotta (prix, bio) */
+    --clay-dark: #5c2e1b;   /* bouton Edit */
+    --blush: #f6cdbf;       /* pastille "Pending" */
+    --star: #f5c518;
+    --ink: #1f2a22;
+    --muted: #8b918a;
+    --line: #ebe8e0;
+
+    --radius-lg: 14px;
+    --radius-md: 10px;
+    --radius-pill: 999px;
+
+    --font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+a { color: inherit; text-decoration: none; }
+h1, h2, h3, p { margin: 0; }
+ul { list-style: none; margin: 0; padding: 0; }
+
+:focus-visible {
+    outline: 2px solid var(--sage);
+    outline-offset: 2px;
+}
+
+/* ---------- Barre de navigation ---------- */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.5rem 1.5rem 0;
+}
+
+.navbar__brand {
+    font-weight: 800;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+}
+
+.navbar__links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+.navbar__links a:hover,
+.navbar__links a[aria-current="page"] { color: var(--ink); }
+
+.navbar__right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Bascule Passenger / Driver */
+.role-toggle {
+    display: inline-flex;
+    padding: 3px;
+    background: var(--sage-pale);
+    border-radius: var(--radius-pill);
+    font-size: 0.75rem;
+}
+
+.role-toggle a {
+    padding: 0.25rem 0.8rem;
+    border-radius: var(--radius-pill);
+    color: var(--ink);
+}
+
+.role-toggle a.is-active { background: var(--surface); font-weight: 600; }
+
+.avatar {
+    display: inline-grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--sage-pale);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.avatar--lg {
+    width: 84px;
+    height: 84px;
+    background: var(--bg);
+    font-size: 1.8rem;
+}
+
+/* ---------- Mise en page du tableau de bord ---------- */
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+}
+
+.page-title { margin-top: 3rem; font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; }
+.page-subtitle { color: var(--muted); font-size: 0.9rem; margin-top: 0.25rem; }
+
+/* Deux colonnes : contenu principal + colonne latérale */
+.dashboard {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: 2.5rem 2rem;
+    margin-top: 2.5rem;
+}
+
+.section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.9rem;
+}
+
+.section-head h2 { font-size: 0.95rem; font-weight: 700; }
+.section-head a { font-size: 0.75rem; color: var(--sage); font-weight: 600; }
+
+/* ---------- Cartes de statistiques ---------- */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.9rem;
+}
+
+.stat-card {
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+}
+
+.stat-card__icon { color: var(--clay); font-size: 1.1rem; }
+.stat-card__value { font-size: 1.4rem; font-weight: 700; margin-top: 0.4rem; }
+.stat-card__label { font-size: 0.75rem; color: var(--muted); }
+
+/* ---------- Pastilles de statut ---------- */
+.badge {
+    display: inline-block;
+    padding: 0.1rem 0.65rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: var(--sage-pale);
+}
+
+.badge--pending { background: var(--blush); }
+.badge--refused { background: #e9c6c6; }
+
+/* ---------- Boutons ---------- */
+.btn {
+    display: inline-block;
+    padding: 0.35rem 1rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-pill);
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn--accept { background: var(--sage); color: #fff; }
+.btn--accept:hover { background: #4d7954; }
+
+.btn--ghost { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.55); }
+.btn--ghost:hover { background: rgba(255, 255, 255, 0.12); }
+
+.btn--edit { background: var(--clay-dark); color: #fff; }
+.btn--edit:hover { background: #46220f; }
+
+.btn--primary { background: var(--forest); color: #fff; padding: 0.6rem 1.4rem; font-size: 0.85rem; }
+.btn--primary:hover { background: var(--forest-soft); }
+
+/* ---------- Demandes de réservation (cartes vert foncé) ---------- */
+.request-list { display: grid; gap: 0.8rem; }
+
+.request-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.1rem 1.2rem;
+    background: var(--forest);
+    color: #fff;
+    border-radius: var(--radius-md);
+}
+
+.request-card strong { display: block; font-size: 0.9rem; }
+.request-card small { color: rgba(255, 255, 255, 0.65); font-size: 0.72rem; }
+.request-card__actions { display: flex; gap: 0.5rem; }
+
+/* ---------- Liste de trajets (carte blanche + carte prix terracotta) ---------- */
+.ride-list { display: grid; gap: 0.8rem; }
+
+.ride-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: 1.2rem;
+    align-items: stretch;
+}
+
+.ride-card {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.2rem;
+    background: var(--surface);
+    border-radius: var(--radius-md);
+}
+
+.ride-card__route { font-weight: 700; margin-top: 0.3rem; }
+.ride-card__meta { font-size: 0.72rem; color: var(--muted); }
+.ride-card__date { text-align: right; font-size: 0.72rem; color: var(--muted); }
+
+.ride-price {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0 1.1rem;
+    background: var(--clay);
+    color: #fff;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+}
+
+.ride-price__actions { display: flex; gap: 0.4rem; }
+.ride-price .btn--ghost { border-color: rgba(255, 255, 255, 0.7); }
+
+/* ---------- Avis (cartes vert foncé avec étoiles) ---------- */
+.review-list { display: grid; gap: 0.8rem; }
+
+.review-card {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.1rem 1.2rem;
+    background: var(--forest);
+    color: #fff;
+    border-radius: var(--radius-md);
+}
+
+.review-card strong { display: block; font-size: 0.85rem; }
+.review-card small { color: rgba(255, 255, 255, 0.6); font-size: 0.72rem; }
+.stars { color: var(--star); letter-spacing: 2px; white-space: nowrap; }
+
+/* ---------- Véhicule ---------- */
+.vehicle {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+}
+
+.field {
+    padding: 0.55rem 0.8rem;
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    font-size: 0.75rem;
+}
+
+.vehicle__photo {
+    grid-column: span 2;
+    grid-row: span 3;
+    display: grid;
+    place-items: center;
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+}
+
+.vehicle__photo img { max-width: 100%; height: auto; }
+
+/* ---------- Profil (carte vert foncé + cartes bio/intérêts) ---------- */
+.profile {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.7rem;
+}
+
+.profile__card {
+    grid-row: span 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.4rem 1rem;
+    background: var(--forest);
+    color: #fff;
+    border-radius: var(--radius-md);
+    font-size: 0.72rem;
+}
+
+.profile__card .avatar--lg { color: var(--ink); }
+.profile__card dl { align-self: stretch; margin: 0.6rem 0 0; }
+.profile__card dt { color: rgba(255, 255, 255, 0.6); }
+.profile__card dd { margin: 0 0 0.35rem; }
+
+.profile__note {
+    padding: 1rem;
+    background: var(--clay);
+    color: #fff;
+    border-radius: var(--radius-md);
+    font-size: 0.75rem;
+}
+
+.profile__note h3 { font-size: 0.75rem; margin-bottom: 0.4rem; }
+
+/* ---------- Formulaires (connexion, inscription, création de trajet) ---------- */
+.form-card {
+    max-width: 440px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+}
+
+.form-card h1 { font-size: 1.4rem; margin-bottom: 1.2rem; }
+
+.form-group { margin-bottom: 1rem; }
+.form-group label { display: block; margin-bottom: 0.3rem; font-size: 0.8rem; font-weight: 600; }
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.65rem 0.8rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--bg);
+    font: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus { outline: 2px solid var(--sage); border-color: transparent; }
+
+.form-error { color: #b3402a; font-size: 0.8rem; margin-top: 0.25rem; }
+
+.flash {
+    margin: 1rem 0;
+    padding: 0.8rem 1rem;
+    border-radius: var(--radius-md);
+    background: var(--sage-pale);
+    font-size: 0.85rem;
+}
+
+.flash--error { background: var(--blush); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+    .dashboard { grid-template-columns: 1fr; }
+    .ride-row { grid-template-columns: 1fr; }
+    .ride-price { padding: 0.8rem 1.1rem; }
+}
+
+@media (max-width: 640px) {
+    .navbar { flex-wrap: wrap; gap: 1rem; }
+    .navbar__links { gap: 1rem; order: 3; width: 100%; overflow-x: auto; }
+    .stats { grid-template-columns: 1fr 1fr; }
+    .request-card { flex-direction: column; align-items: flex-start; }
+    .vehicle { grid-template-columns: 1fr 1fr; }
+    .vehicle__photo { grid-column: span 2; grid-row: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+}
+
+/* ---------- Menu utilisateur (apparaît au survol de la bulle) ---------- */
+.user-menu { position: relative; }
+
+button.avatar {
+    border: 0;
+    cursor: pointer;
+    font-family: inherit;
+    color: inherit;
+}
+
+.user-menu__list {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    z-index: 20;
+    min-width: 150px;
+    margin-top: 0.5rem;
+    padding: 0.4rem;
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 24px rgba(31, 42, 34, 0.12);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+}
+
+/* zone invisible qui évite que le menu se ferme entre la bulle et la liste */
+.user-menu__list::before {
+    content: "";
+    position: absolute;
+    top: -0.6rem;
+    left: 0;
+    right: 0;
+    height: 0.6rem;
+}
+
+.user-menu:hover .user-menu__list,
+.user-menu:focus-within .user-menu__list {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+}
+
+.user-menu__list a {
+    display: block;
+    padding: 0.5rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+}
+
+.user-menu__list a:hover { background: var(--bg); }
+
+/* Section qui occupe toute la largeur de la grille du dashboard */
+.dashboard__full { grid-column: 1 / -1; }

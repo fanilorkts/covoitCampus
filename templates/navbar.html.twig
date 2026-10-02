@@ -1,0 +1,30 @@
+<nav class="navbar">
+    <a class="navbar__brand" href="{{ path('app_dashboard_driver') }}">BackSeat.</a>
+    <ul class="navbar__links">
+        <li><a href="...">Offer a ride</a></li>
+        <li><a href="...">Find passenger</a></li>
+        <li><a href="...">Messages</a></li>
+    </ul>
+    <div class="navbar__right">
+        <div class="role-toggle">
+            <a href="{{ path('app_dashboard_passenger') }}" class="{{ route == 'app_dashboard_passenger' ? 'is-active' }}">Passenger</a>
+            <a href="{{ path('app_dashboard_driver') }}" class="{{ route == 'app_dashboard_driver' ? 'is-active' }}">Driver</a>
+        </div>
+    </div>
+        {% if app.user %}
+            <div class="user-menu">
+                <button type="button" class="avatar" aria-haspopup="true" aria-label="Menu utilisateur">
+                    {{ app.user.prenom|first|upper }}
+                </button>
+                <ul class="user-menu__list">
+                    {# TODO : remplace "#" par ta page de liste des trajets : path('nom_de_ta_route') #}
+                    <li><a href="#">Rides</a></li>
+                    {# Si ton logout est défini dans security.yaml, tu peux utiliser path('app_logout') #}
+                    <li><a href="/logout">Logout</a></li>
+                </ul>
+            </div>
+        {% else %}
+            <a href="/login">Log In</a>
+        {% endif %}
+    </div>
+</nav>

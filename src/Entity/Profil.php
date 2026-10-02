@@ -13,6 +13,8 @@ class Profil
     #[ORM\Column]
     private ?int $id = null;
 
+    // remets ici tes propriétés (biographie, centresInteret, etc.)
+
     public function getId(): ?int
     {
         return $this->id;

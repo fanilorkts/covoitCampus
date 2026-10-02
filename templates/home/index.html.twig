@@ -13,18 +13,6 @@
 
 {# ---------- Nav + Hero ---------- #}
 <div class="home-container">
-    <nav class="home-nav">
-        <a href="{{ path('app_home') }}" class="home-nav__logo">CovoitCampus</a>
-        <div class="home-nav__links">
-            {% if app.user %}
-                <a href="{{ path('app_trajets_index') }}">Rides</a>
-                <a href="{{ logout_path() }}" class="btn btn--primary">Log out</a>
-            {% else %}
-                <a href="{{ path('app_login') }}">Log in</a>
-                <a href="{{ path('app_register') }}" class="btn btn--primary">Sign up</a>
-            {% endif %}
-        </div>
-    </nav>
 
     <section class="hero">
         <span class="hero__blob hero__blob--1"></span>
