@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Avis;
 use App\Entity\Reservation;
-use App\Entity\Trajet;
+use App\Entity\Trajets;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,7 +34,7 @@ final class DriverDashboardController extends AbstractController
         }
 
         // Trajets à venir (Ouvert ou Complet), les 3 prochains
-        $upcoming = $em->getRepository(Trajet::class)->createQueryBuilder('t')
+        $upcoming = $em->getRepository(Trajets::class)->createQueryBuilder('t')
             ->andWhere('t.conducteur = :u')
             ->andWhere('t.statut IN (:statuts)')
             ->andWhere('t.dateHeure >= :now')
@@ -46,7 +46,7 @@ final class DriverDashboardController extends AbstractController
             ->getQuery()->getResult();
 
         // Trajets terminés, les 2 derniers
-        $past = $em->getRepository(Trajet::class)->createQueryBuilder('t')
+        $past = $em->getRepository(Trajets::class)->createQueryBuilder('t')
             ->andWhere('t.conducteur = :u')
             ->andWhere('t.statut = :statut')
             ->setParameter('u', $user)
@@ -75,7 +75,7 @@ final class DriverDashboardController extends AbstractController
             ->getQuery()->getResult();
 
         // Statistiques
-        $ridesShared = (int) $em->getRepository(Trajet::class)->createQueryBuilder('t')
+        $ridesShared = (int) $em->getRepository(Trajets::class)->createQueryBuilder('t')
             ->select('COUNT(t.id)')
             ->andWhere('t.conducteur = :u')
             ->andWhere('t.statut = :statut')
