@@ -70,13 +70,16 @@
         <div class="panel">
             {% for r in reservations %}
                 <div class="request-row">
-                    <div>
-                        <a href="{{ path('app_profil', {'id': r.idPassager.id}) }}">{{ r.idPassager.prenom }} {{ r.idPassager.nom }}</a>
-                        ({% if notes[r.idPassager.id] > 0 %}{{ notes[r.idPassager.id]|number_format(1, ',') }}/5{% else %}not rated yet{% endif %})
-                        <span class="badge {{ r.statut == 'En attente' ? 'badge--pending' : (r.statut == 'Refusée' ? 'badge--refused') }}">{{ r.statut }}</span>
-                    </div>
-                    {% if r.statut == constant('App\\Entity\\Reservation::STATUS_EN_ATTENTE') %}
+                    <div class="person">
+                        <span class="avatar avatar--sm">{{ r.idPassager.prenom|first|upper }}</span>
                         <div>
+                            <a href="{{ path('app_profil', {'id': r.idPassager.id}) }}">{{ r.idPassager.prenom }} {{ r.idPassager.nom }}</a>
+                            <small>{% if notes[r.idPassager.id] > 0 %}★ {{ notes[r.idPassager.id]|number_format(1, ',') }}/5{% else %}Not rated yet{% endif %}</small>
+                        </div>
+                    </div>
+                    <div class="request-row__side">
+                        <span class="badge {{ r.statut == 'En attente' ? 'badge--pending' : (r.statut == 'Refusée' ? 'badge--refused') }}">{{ r.statut }}</span>
+                        {% if r.statut == constant('App\\Entity\\Reservation::STATUS_EN_ATTENTE') %}
                             <form method="post" action="{{ path('app_reservation_accepter', {'id': r.id}) }}">
                                 <input type="hidden" name="_token" value="{{ csrf_token('accepter' ~ r.id) }}">
                                 <button class="btn btn--accept">Accept</button>
@@ -85,11 +88,11 @@
                                 <input type="hidden" name="_token" value="{{ csrf_token('refuser' ~ r.id) }}">
                                 <button class="btn btn--danger">Decline</button>
                             </form>
-                        </div>
-                    {% endif %}
+                        {% endif %}
+                    </div>
                 </div>
             {% else %}
-                <p>No request yet.</p>
+                <p class="muted">No request yet.</p>
             {% endfor %}
         </div>
     {% endif %}
@@ -102,14 +105,20 @@
                 {% if r.statut == constant('App\\Entity\\Reservation::STATUS_CONFIRME') %}
                     {% if isOwner %}
                         {% set aNoter = aNoter + 1 %}
-                        <p><a href="{{ path('app_avis_noter', {'id': trajet.id, 'cibleId': r.idPassager.id}) }}">Rate {{ r.idPassager.prenom }}</a></p>
+                        <div class="request-row">
+                            <div class="person"><span class="avatar avatar--sm">{{ r.idPassager.prenom|first|upper }}</span><a href="{{ path('app_profil', {'id': r.idPassager.id}) }}">{{ r.idPassager.prenom }} {{ r.idPassager.nom }}</a></div>
+                            <a class="btn btn--accept" href="{{ path('app_avis_noter', {'id': trajet.id, 'cibleId': r.idPassager.id}) }}">Rate {{ r.idPassager.prenom }}</a>
+                        </div>
                     {% elseif app.user.id == r.idPassager.id %}
                         {% set aNoter = aNoter + 1 %}
-                        <p><a href="{{ path('app_avis_noter', {'id': trajet.id, 'cibleId': trajet.idConducteur.id}) }}">Rate the driver</a></p>
+                        <div class="request-row">
+                            <div class="person"><span class="avatar avatar--sm">{{ trajet.idConducteur.prenom|first|upper }}</span><a href="{{ path('app_profil', {'id': trajet.idConducteur.id}) }}">{{ trajet.idConducteur.prenom }} {{ trajet.idConducteur.nom }}</a></div>
+                            <a class="btn btn--accept" href="{{ path('app_avis_noter', {'id': trajet.id, 'cibleId': trajet.idConducteur.id}) }}">Rate the driver</a>
+                        </div>
                     {% endif %}
                 {% endif %}
             {% endfor %}
-            {% if aNoter == 0 %}<p>Nobody to rate for this ride.</p>{% endif %}
+            {% if aNoter == 0 %}<p class="muted">Nobody to rate for this ride.</p>{% endif %}
         </div>
     {% endif %}
 

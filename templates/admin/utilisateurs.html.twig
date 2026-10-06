@@ -1,33 +1,79 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Account management{% endblock %}
+{% block title %}Account Management - BackSeat{% endblock %}
 
 {% block body %}
-<div class="page">
-    <header class="page-head"><h1 class="page-title">Account management</h1></header>
+<div class="admin-shell">
+    <header class="admin-head">
+        <div>
+            <span class="admin-eyebrow">BackSeat / Administration</span>
+            <h1 class="admin-title">Account management</h1>
+            <p class="admin-subtitle">Manage registered users and administrator access.</p>
+        </div>
+        <span class="admin-badge">Users</span>
+    </header>
 
-    <div class="table-wrap">
-        <table class="table">
-            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th></th></tr></thead>
-            <tbody>
-            {% for u in utilisateurs %}
-                <tr>
-                    <td>{{ u.prenom }} {{ u.nom }}</td>
-                    <td>{{ u.email }}</td>
-                    <td><span class="badge {{ u.role.value == 'ROLE_ADMIN' ? 'badge--full' }}">{{ u.role.value }}</span></td>
-                    <td>
-                        {% if u.id != app.user.id %}
-                            <form method="post" action="{{ path('app_admin_utilisateur_role', {'id': u.id}) }}">
-                                <input type="hidden" name="_token" value="{{ csrf_token('role' ~ u.id) }}">
-                                <button class="btn btn--secondary">{{ u.role.value == 'ROLE_ADMIN' ? 'Remove admin' : 'Make admin' }}</button>
-                            </form>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <a class="back-link" href="{{ path('app_admin_index') }}">← Back to admin</a>
+    <nav class="admin-nav" aria-label="Administration navigation">
+        <a class="admin-nav__link" href="{{ path('app_admin_index') }}">Overview</a>
+        <a class="admin-nav__link admin-nav__link--active" href="{{ path('app_admin_utilisateurs') }}">Users</a>
+        <a class="admin-nav__link" href="{{ path('app_admin_avis') }}">Reviews</a>
+    </nav>
+
+    <section class="admin-panel admin-panel--table">
+        <div class="admin-panel__head">
+            <div>
+                <span class="admin-panel__kicker">Accounts</span>
+                <h2>Registered users</h2>
+            </div>
+            <span class="admin-count">{{ utilisateurs|length }} user{{ utilisateurs|length == 1 ? '' : 's' }}</span>
+        </div>
+
+        <div class="admin-table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th class="admin-table__action">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for u in utilisateurs %}
+                    <tr>
+                        <td>
+                            <div class="admin-user">
+                                <span class="admin-avatar">{{ u.prenom|first|upper }}</span>
+                                <strong>{{ u.prenom }} {{ u.nom }}</strong>
+                            </div>
+                        </td>
+                        <td class="admin-table__muted">{{ u.email }}</td>
+                        <td>
+                            <span class="admin-role {{ u.role.value == 'ROLE_ADMIN' ? 'admin-role--admin' : '' }}">
+                                {{ u.role.value == 'ROLE_ADMIN' ? 'Administrator' : 'User' }}
+                            </span>
+                        </td>
+                        <td class="admin-table__action">
+                            {% if u.id != app.user.id %}
+                                <form method="post" action="{{ path('app_admin_utilisateur_role', {'id': u.id}) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('role' ~ u.id) }}">
+                                    <button class="admin-action" type="submit">
+                                        {{ u.role.value == 'ROLE_ADMIN' ? 'Remove admin' : 'Make admin' }}
+                                    </button>
+                                </form>
+                            {% else %}
+                                <span class="admin-current">Current account</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="4" class="admin-empty">No users to display.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <a class="admin-back" href="{{ path('app_admin_index') }}">← Back to dashboard</a>
 </div>
 {% endblock %}

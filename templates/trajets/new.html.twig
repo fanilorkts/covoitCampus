@@ -1,18 +1,57 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Offer a ride{% endblock %}
+{% block title %}Offer a ride - Backseat{% endblock %}
 
 {% block body %}
-<div class="page page--narrow">
-    <header class="page-head">
+<div class="max-w-xl mx-auto my-10 p-8 bg-white rounded-2xl border border-borderDivider shadow-sm">
+    <div class="mb-6">
+        <h1 class="font-poppins text-2xl font-bold text-darkGreen">Offer a ride</h1>
+        <p class="text-sm text-bodyText mt-1">Set your route, date, seats and price.</p>
+    </div>
+
+    {{ form_start(form, {'attr': {'class': 'space-y-5'}}) }}
         <div>
-            <h1 class="page-title">Offer a ride</h1>
-            <p class="page-subtitle">Set your route, date, seats and price.</p>
+            <label class="block text-xs font-semibold uppercase text-mutedText mb-1">Departure</label>
+            {{ form_widget(form.origine, {'attr': {'class': 'w-full p-3 bg-cream border border-borderDivider rounded-xl focus:outline-none focus:border-primaryGreen text-darkGreen', 'placeholder': 'e.g. Gare'}}) }}
+            {{ form_errors(form.origine) }}
         </div>
-    </header>
 
-    {{ include('trajets/_form.html.twig', {'button_label': 'Publish ride'}) }}
+        <div>
+            <label class="block text-xs font-semibold uppercase text-mutedText mb-1">Destination</label>
+            {{ form_widget(form.destination, {'attr': {'class': 'w-full p-3 bg-cream border border-borderDivider rounded-xl focus:outline-none focus:border-primaryGreen text-darkGreen', 'placeholder': 'e.g. Campus'}}) }}
+            {{ form_errors(form.destination) }}
+        </div>
 
-    <a class="back-link" href="{{ path('app_trajets_index') }}">← Back to rides</a>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-xs font-semibold uppercase text-mutedText mb-1">Date & Time</label>
+                {{ form_widget(form.date_heure, {'attr': {'class': 'w-full p-3 bg-cream border border-borderDivider rounded-xl focus:outline-none focus:border-primaryGreen text-darkGreen'}}) }}
+                {{ form_errors(form.date_heure) }}
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase text-mutedText mb-1">Seats available</label>
+                {{ form_widget(form.places_totales, {'attr': {'class': 'w-full p-3 bg-cream border border-borderDivider rounded-xl focus:outline-none focus:border-primaryGreen text-darkGreen'}}) }}
+                {{ form_errors(form.places_totales) }}
+            </div>
+        </div>
+
+        {% if form.prix is defined %}
+        <div>
+            <label class="block text-xs font-semibold uppercase text-mutedText mb-1">Price per passenger (€)</label>
+            {{ form_widget(form.prix, {'attr': {'class': 'w-full p-3 bg-cream border border-borderDivider rounded-xl focus:outline-none focus:border-primaryGreen text-darkGreen', 'placeholder': '0.00'}}) }}
+            {{ form_errors(form.prix) }}
+        </div>
+        {% endif %}
+
+        <div class="pt-2">
+            <button type="submit" class="w-full py-3 bg-darkGreen hover:bg-primaryGreen text-white font-medium rounded-xl transition duration-200">
+                Publish ride
+            </button>
+        </div>
+    {{ form_end(form) }}
+
+    <div class="mt-4 text-center">
+        <a href="{{ path('app_trajets_index') }}" class="text-xs text-mutedText hover:text-darkGreen">← Back to rides</a>
+    </div>
 </div>
 {% endblock %}
