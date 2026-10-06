@@ -54,7 +54,7 @@
                             {{ next.idTrajet.dateHeure|date('H:i') }} with {{ next.idTrajet.idConducteur.prenom }}
                         </div>
                         {# TODO : lien vers la page détail du trajet #}
-                        <a class="btn btn--light" href="#">View ride</a>
+                        <a class="btn btn--light" href="{{ path('app_trajets_show', {'id': next.idTrajet.id}) }}">View ride</a>
                     </article>
                     <div class="next-ride__side">
                         <div class="highlight highlight--clay">
@@ -119,13 +119,12 @@
         <section class="dashboard__full">
             <div class="section-head"><h2>Find a ride</h2></div>
             {# TODO : remplace action="#" par la route de ta page de recherche (method GET) #}
-            <form class="search-bar" method="get" action="#">
-                <input type="text" name="from" placeholder="From" aria-label="From">
-                <input type="text" name="to" placeholder="To" aria-label="To">
-                <input type="date" name="date" aria-label="Date">
-                <input type="number" name="passengers" min="1" max="8" placeholder="Passengers" aria-label="Passengers">
-                <button type="submit" class="btn btn--primary">Search</button>
-            </form>
+            <form class="search-bar" method="get" action="{{ path('app_trajets_index') }}">
+    <input type="text" name="origine" placeholder="From" aria-label="From">
+    <input type="text" name="destination" placeholder="To" aria-label="To">
+    <input type="date" name="date_saisie" aria-label="Date">
+    <button type="submit" class="btn btn--primary">Search</button>
+</form>
         </section>
 
         {# ---------- Messages (pas encore de messagerie en base) ---------- #}

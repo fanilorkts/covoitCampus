@@ -51,8 +51,14 @@
                         </div>
                         <div class="request-card__actions">
                             {# TODO : brancher sur tes routes d'acceptation / refus #}
-                            <a class="btn btn--accept" href="#">Accept</a>
-                            <a class="btn btn--ghost" href="#">Decline</a>
+                            <form method="post" action="{{ path('app_reservation_accepter', {'id': r.id}) }}">
+    <input type="hidden" name="_token" value="{{ csrf_token('accepter' ~ r.id) }}">
+    <button type="submit" class="btn btn--accept">Accept</button>
+</form>
+<form method="post" action="{{ path('app_reservation_refuser', {'id': r.id}) }}">
+    <input type="hidden" name="_token" value="{{ csrf_token('refuser' ~ r.id) }}">
+    <button type="submit" class="btn btn--ghost">Decline</button>
+</form>
                         </div>
                     </article>
                 {% else %}
@@ -84,8 +90,8 @@
                             <span>{{ t.prix is not null ? t.prix ~ '€' : '–' }}</span>
                             <div class="ride-price__actions">
                                 {# TODO : brancher sur tes routes d'édition / annulation #}
-                                <a class="btn btn--edit" href="#">Edit</a>
-                                <a class="btn btn--ghost" href="#">Cancel</a>
+                                <a class="btn btn--edit" href="{{ path('app_trajets_edit', {'id': t.id}) }}">Edit</a>
+<a class="btn btn--ghost" href="{{ path('app_trajets_show', {'id': t.id}) }}">Details</a>
                             </div>
                         </div>
                     </div>
