@@ -117,7 +117,7 @@ final class TrajetsController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Trajets $trajet, EntityManagerInterface $entityManager): Response
     {
-        if ($trajet->getIdConducteur() !== $this->getUser()) {
+        if ($trajet->getIdConducteur()?->getId() !== $this->getUser()?->getId()) {
             throw $this->createAccessDeniedException();
         }
 
@@ -140,7 +140,7 @@ final class TrajetsController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function delete(Request $request, Trajets $trajet, EntityManagerInterface $entityManager): Response
     {
-        if ($trajet->getIdConducteur() !== $this->getUser()) {
+        if ($trajet->getIdConducteur()?->getId() !== $this->getUser()?->getId()) {
             throw $this->createAccessDeniedException();
         }
 

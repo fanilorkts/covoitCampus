@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{% block navbar %}{% endblock %}
+
 {% block title %}Sign up{% endblock %}
 
 {% block stylesheets %}
@@ -19,7 +21,7 @@
         <span class="auth-brand__circle auth-brand__circle--3"></span>
 
         <div class="auth-brand__content">
-            <span class="auth-brand__logo">CovoitCampus</span>
+            <a class="auth-brand__logo" href="{{ path('app_home') }}">CovoitCampus</a>
             <h2 class="auth-brand__title">
                 Travel together,<br>
                 <span class="auth-brand__title-accent">simply.</span>

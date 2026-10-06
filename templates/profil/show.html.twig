@@ -1,36 +1,55 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Profil de {{ utilisateur.prenom }}{% endblock %}
+{% block title %}{{ utilisateur.prenom }} {{ utilisateur.nom }}{% endblock %}
 
 {% block body %}
-    <h1>{{ utilisateur.prenom }} {{ utilisateur.nom }}</h1>
+<div class="page page--narrow">
+    <header class="page-head">
+        <div>
+            <h1 class="page-title">{{ utilisateur.prenom }} {{ utilisateur.nom }}</h1>
+            <p class="page-subtitle">CovoitCampus member</p>
+        </div>
+        {% if app.user and app.user.id == utilisateur.id %}
+            <a class="btn btn--edit" href="{{ path('app_profil_modifier') }}">Edit my profile</a>
+        {% endif %}
+    </header>
 
-    <p>Note moyenne :
-        {% if note > 0 %}<strong>{{ note|number_format(1, ',') }}/5</strong>{% else %}pas encore noté{% endif %}
-    </p>
-    <p>Trajets réalisés : <strong>{{ nbTrajets }}</strong></p>
-
-    <h2>Avis reçus</h2>
-    {% for a in avis %}
-        <p>{{ a.note }}/5 — {{ a.commentaire }} (par {{ a.auteur.prenom }}, le {{ a.date|date('d/m/Y') }})</p>
-    {% else %}
-        <p>Aucun avis pour le moment.</p>
-    {% endfor %}
-
-    {% if utilisateur.centresInteret %}
-    <p>Centres d'intérêt :
-        {% for interet in utilisateur.centresInteret|split(',') %}
-            <span>{{ interet|trim }}</span>{{ not loop.last ? ' · ' : '' }}
-        {% endfor %}
-    </p>
-    {% endif %}
+    <div class="panel-grid">
+        <div class="kpi">
+            <strong>{% if note > 0 %}{{ note|number_format(1, ',') }}/5{% else %}–{% endif %}</strong>
+            <span>Average rating</span>
+        </div>
+        <div class="kpi"><strong>{{ nbTrajets }}</strong><span>Rides completed</span></div>
+    </div>
 
     {% if utilisateur.biographie %}
-        <h2>À propos</h2>
-        <p>{{ utilisateur.biographie|nl2br }}</p>
+        <div class="panel panel--clay">
+            <h3>About</h3>
+            <p>{{ utilisateur.biographie|nl2br }}</p>
+        </div>
     {% endif %}
 
-    {% if app.user and app.user.id == utilisateur.id %}
-        <a href="{{ path('app_profil_modifier') }}">Modifier mon profil</a>
+    {% if utilisateur.centresInteret %}
+        <div class="panel">
+            <h3>Interests</h3>
+            <div class="tags">
+                {% for interet in utilisateur.centresInteret|split(',') %}
+                    {% if interet|trim %}<span class="tag">{{ interet|trim }}</span>{% endif %}
+                {% endfor %}
+            </div>
+        </div>
     {% endif %}
+
+    <h2>Reviews received</h2>
+    <div class="panel">
+        {% for a in avis %}
+            <div class="review-line">
+                <strong>{{ a.note }}/5</strong> — {{ a.commentaire }}<br>
+                <small>by {{ a.auteur.prenom }}, {{ a.date|date('d/m/Y') }}</small>
+            </div>
+        {% else %}
+            <p>No review yet.</p>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}

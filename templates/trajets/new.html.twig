@@ -1,11 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Trajets{% endblock %}
+{% block title %}Offer a ride{% endblock %}
 
 {% block body %}
-    <h1>Create new Trajets</h1>
+<div class="page page--narrow">
+    <header class="page-head">
+        <div>
+            <h1 class="page-title">Offer a ride</h1>
+            <p class="page-subtitle">Set your route, date, seats and price.</p>
+        </div>
+    </header>
 
-    {{ include('trajets/_form.html.twig') }}
+    {{ include('trajets/_form.html.twig', {'button_label': 'Publish ride'}) }}
 
-    <a href="{{ path('app_trajets_index') }}">back to list</a>
+    <a class="back-link" href="{{ path('app_trajets_index') }}">← Back to rides</a>
+</div>
 {% endblock %}

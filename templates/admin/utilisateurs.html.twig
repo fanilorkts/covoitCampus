@@ -1,28 +1,33 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Gestion des comptes{% endblock %}
+{% block title %}Account management{% endblock %}
 
 {% block body %}
-    <h1>Gestion des comptes</h1>
-    <table class="table">
-        <thead><tr><th>Nom</th><th>Email</th><th>Rôle</th><th></th></tr></thead>
-        <tbody>
-        {% for u in utilisateurs %}
-            <tr>
-                <td>{{ u.prenom }} {{ u.nom }}</td>
-                <td>{{ u.email }}</td>
-                <td>{{ u.role.value }}</td>
-                <td>
-                    {% if u.id != app.user.id %}
-                        <form method="post" action="{{ path('app_admin_utilisateur_role', {'id': u.id}) }}">
-                            <input type="hidden" name="_token" value="{{ csrf_token('role' ~ u.id) }}">
-                            <button>{{ u.role.value == 'ROLE_ADMIN' ? 'Retirer admin' : 'Passer admin' }}</button>
-                        </form>
-                    {% endif %}
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <a href="{{ path('app_admin_index') }}">Retour</a>
+<div class="page">
+    <header class="page-head"><h1 class="page-title">Account management</h1></header>
+
+    <div class="table-wrap">
+        <table class="table">
+            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th></th></tr></thead>
+            <tbody>
+            {% for u in utilisateurs %}
+                <tr>
+                    <td>{{ u.prenom }} {{ u.nom }}</td>
+                    <td>{{ u.email }}</td>
+                    <td><span class="badge {{ u.role.value == 'ROLE_ADMIN' ? 'badge--full' }}">{{ u.role.value }}</span></td>
+                    <td>
+                        {% if u.id != app.user.id %}
+                            <form method="post" action="{{ path('app_admin_utilisateur_role', {'id': u.id}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('role' ~ u.id) }}">
+                                <button class="btn btn--secondary">{{ u.role.value == 'ROLE_ADMIN' ? 'Remove admin' : 'Make admin' }}</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a class="back-link" href="{{ path('app_admin_index') }}">← Back to admin</a>
+</div>
 {% endblock %}

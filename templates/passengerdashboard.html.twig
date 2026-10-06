@@ -82,7 +82,7 @@
                     <span class="page-subtitle">No usual routes yet.</span>
                 {% endfor %}
                 {# TODO : lien vers la recherche de trajets #}
-                <a class="chip chip--add" href="#" aria-label="Find a ride">+</a>
+                <a class="chip chip--add" href="{{ path('app_trajets_index') }}" aria-label="Find a ride">+</a>
             </div>
 
             <h3 class="subhead">Recent history</h3>
@@ -137,7 +137,7 @@
         <section>
             <div class="section-head">
                 <h2>Profile</h2>
-                <a href="#">View all</a>
+                <a href="{{ path('app_profil', {id: user.id}) }}">View all</a>
             </div>
             <div class="profile">
                 <div class="profile__card">

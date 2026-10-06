@@ -1,98 +1,118 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Trajets{% endblock %}
+{% block title %}{{ trajet.origine }} → {{ trajet.destination }}{% endblock %}
 
 {% block body %}
-    <h1>Trajets</h1>
+{% set isOwner = app.user and trajet.idConducteur and app.user.id == trajet.idConducteur.id %}
+{% set isOpen = trajet.statut == constant('App\\Entity\\Trajets::STATUTS_OUVERT') %}
+{% set isDone = trajet.statut == constant('App\\Entity\\Trajets::STATUTS_TERMINE') %}
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ trajet.id }}</td>
-            </tr>
-            <tr>
-                <th>Origine</th>
-                <td>{{ trajet.origine }}</td>
-            </tr>
-            <tr>
-                <th>Destination</th>
-                <td>{{ trajet.destination }}</td>
-            </tr>
-            <tr>
-                <th>Date_heure</th>
-                <td>{{ trajet.dateHeure ? trajet.dateHeure|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Places_totales</th>
-                <td>{{ trajet.placesTotales }}</td>
-            </tr>
-            <tr>
-                <th>Places_restantes</th>
-                <td>{{ trajet.placesRestantes }}</td>
-            </tr>
-            <tr>
-                <th>Statut</th>
-                <td>{{ trajet.statut }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    {% if trajet.statut == constant ('App\\Entity\\Trajets::STATUTS_OUVERT') and app.user != trajet.idConducteur %}
-        <form method="post" action="{{ path('app_reservation_new_trajet', {'id': trajet.id}) }}">
-            <input type="hidden" name="_token" value="{{ csrf_token('reserver' ~ trajet.id) }}">
-            <p>Conducteur :
-                <a href="{{ path('app_profil', {'id': trajet.idConducteur.id}) }}">{{ trajet.idConducteur.prenom }} {{ trajet.idConducteur.nom }}</a>
-                ({% if noteConducteur > 0 %}{{ noteConducteur|number_format(1, ',') }}/5{% else %}pas encore noté{% endif %})
+<div class="page page--narrow">
+    <header class="page-head">
+        <div>
+            <h1 class="page-title">{{ trajet.origine }} → {{ trajet.destination }}</h1>
+            <p class="page-subtitle">
+                <span class="badge {{ isDone ? 'badge--done' : (trajet.statut == 'Complet' ? 'badge--full') }}">{{ trajet.statut }}</span>
             </p>
-            <button class="btn btn-success">Réserver</button>
-        </form>
+        </div>
+    </header>
 
-    {% endif %}
+    <div class="table-wrap">
+        <table class="table table--details">
+            <tbody>
+                <tr><th>Departure</th><td>{{ trajet.origine }}</td></tr>
+                <tr><th>Destination</th><td>{{ trajet.destination }}</td></tr>
+                <tr><th>Date</th><td>{{ trajet.dateHeure ? trajet.dateHeure|date('d/m/Y H:i') : '' }}</td></tr>
+                <tr><th>Seats</th><td>{{ trajet.placesRestantes }} left / {{ trajet.placesTotales }}</td></tr>
+                <tr><th>Price</th><td>{{ trajet.prix|number_format(2, ',', ' ') }} €</td></tr>
+                <tr>
+                    <th>Driver</th>
+                    <td>
+                        {% if app.user %}
+                            <a href="{{ path('app_profil', {'id': trajet.idConducteur.id}) }}">{{ trajet.idConducteur.prenom }} {{ trajet.idConducteur.nom }}</a>
+                        {% else %}
+                            {{ trajet.idConducteur.prenom }}
+                        {% endif %}
+                        ({% if noteConducteur > 0 %}{{ noteConducteur|number_format(1, ',') }}/5{% else %}not rated yet{% endif %})
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-    {% if app.user and app.user == trajet.idConducteur %}
-        <h2>Demandes en attente</h2>
-        {% for r in reservations %}
-            <div>
-                <a href="{{ path('app_profil', {'id': r.idPassager.id}) }}">{{ r.idPassager.prenom }} {{ r.idPassager.nom }}</a>
-                ({% if notes[r.idPassager.id] > 0 %}{{ notes[r.idPassager.id]|number_format(1, ',') }}/5{% else %}pas encore noté{% endif %})
-                - {{ r.statut }} 
-                {%  if r.statut == constant ('App\\Entity\\Reservation::STATUS_EN_ATTENTE') %}
-                    <form method="post" action="{{ path('app_reservation_accepter', {'id': r.id}) }}">
-                        <input type="hidden" name="_token" value="{{ csrf_token('accepter' ~ r.id) }}">
-                        <button class="btn btn-success">Accepter</button>
-                    </form>
-                    <form method="post" action="{{ path('app_reservation_refuser', {'id': r.id}) }}">
-                        <input type="hidden" name="_token" value="{{ csrf_token('refuser' ~ r.id) }}">
-                        <button class="btn btn-danger">Refuser</button>
-                    </form>
-                {% endif %}
-            </div>
-    {% else %}
-        <p>Aucune demande pour le moment.</p>
-        {% endfor %}
-    {% endif %}
-    {% if app.user and app.user.id == trajet.idConducteur.id and trajet.statut != constant('App\\Entity\\Trajets::STATUTS_TERMINE') %}
-        <form method="post" action="{{ path('app_trajets_terminer', {'id': trajet.id}) }}">
-            <input type="hidden" name="_token" value="{{ csrf_token('terminer' ~ trajet.id) }}">
-            <button class="btn">Marquer comme terminé</button>
-        </form>
-    {% endif %}
-    {% if app.user and trajet.statut == constant('App\\Entity\\Trajets::STATUTS_TERMINE') %}
-    <h2>Noter</h2>
-    {% for r in reservations %}
-        {% if r.statut == constant('App\\Entity\\Reservation::STATUS_CONFIRME') %}
-            {% if app.user.id == trajet.idConducteur.id %}
-                <a href="{{ path('app_avis_noter', {'id': trajet.id, 'cibleId': r.idPassager.id}) }}">Noter {{ r.idPassager.prenom }}</a>
-            {% elseif app.user.id == r.idPassager.id %}
-                <a href="{{ path('app_avis_noter', {'id': trajet.id, 'cibleId': trajet.idConducteur.id}) }}">Noter le conducteur</a>
+    <div class="btn-row">
+        {% if isOpen and not isOwner %}
+            {% if app.user %}
+                <form method="post" action="{{ path('app_reservation_new_trajet', {'id': trajet.id}) }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('reserver' ~ trajet.id) }}">
+                    <button class="btn btn--accept">Book a seat</button>
+                </form>
+            {% else %}
+                <a class="btn btn--accept" href="{{ path('app_login') }}">Log in to book</a>
             {% endif %}
         {% endif %}
-    {% endfor %}
-{% endif %}
-    <a href="{{ path('app_trajets_index') }}">back to list</a>
 
-    <a href="{{ path('app_trajets_edit', {'id': trajet.id}) }}">edit</a>
+        {% if isOwner and not isDone %}
+            <form method="post" action="{{ path('app_trajets_terminer', {'id': trajet.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('terminer' ~ trajet.id) }}">
+                <button class="btn btn--primary">Mark as completed</button>
+            </form>
+        {% endif %}
 
-    {{ include('trajets/_delete_form.html.twig') }}
+        {% if isOwner %}
+            <a class="btn btn--edit" href="{{ path('app_trajets_edit', {'id': trajet.id}) }}">Edit</a>
+            {{ include('trajets/_delete_form.html.twig') }}
+        {% endif %}
+    </div>
+
+    {% if isOwner %}
+        <h2>Booking requests</h2>
+        <div class="panel">
+            {% for r in reservations %}
+                <div class="request-row">
+                    <div>
+                        <a href="{{ path('app_profil', {'id': r.idPassager.id}) }}">{{ r.idPassager.prenom }} {{ r.idPassager.nom }}</a>
+                        ({% if notes[r.idPassager.id] > 0 %}{{ notes[r.idPassager.id]|number_format(1, ',') }}/5{% else %}not rated yet{% endif %})
+                        <span class="badge {{ r.statut == 'En attente' ? 'badge--pending' : (r.statut == 'Refusée' ? 'badge--refused') }}">{{ r.statut }}</span>
+                    </div>
+                    {% if r.statut == constant('App\\Entity\\Reservation::STATUS_EN_ATTENTE') %}
+                        <div>
+                            <form method="post" action="{{ path('app_reservation_accepter', {'id': r.id}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('accepter' ~ r.id) }}">
+                                <button class="btn btn--accept">Accept</button>
+                            </form>
+                            <form method="post" action="{{ path('app_reservation_refuser', {'id': r.id}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('refuser' ~ r.id) }}">
+                                <button class="btn btn--danger">Decline</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+            {% else %}
+                <p>No request yet.</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if app.user and isDone %}
+        <h2>Rate</h2>
+        <div class="panel">
+            {% set aNoter = 0 %}
+            {% for r in reservations %}
+                {% if r.statut == constant('App\\Entity\\Reservation::STATUS_CONFIRME') %}
+                    {% if isOwner %}
+                        {% set aNoter = aNoter + 1 %}
+                        <p><a href="{{ path('app_avis_noter', {'id': trajet.id, 'cibleId': r.idPassager.id}) }}">Rate {{ r.idPassager.prenom }}</a></p>
+                    {% elseif app.user.id == r.idPassager.id %}
+                        {% set aNoter = aNoter + 1 %}
+                        <p><a href="{{ path('app_avis_noter', {'id': trajet.id, 'cibleId': trajet.idConducteur.id}) }}">Rate the driver</a></p>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            {% if aNoter == 0 %}<p>Nobody to rate for this ride.</p>{% endif %}
+        </div>
+    {% endif %}
+
+    <a class="back-link" href="{{ path('app_trajets_index') }}">← Back to rides</a>
+</div>
 {% endblock %}

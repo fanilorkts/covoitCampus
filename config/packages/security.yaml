@@ -40,6 +40,9 @@ security:
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/register, roles: PUBLIC_ACCESS }
         - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/dashboard, roles: ROLE_USER }
+        - { path: ^/(profil|mon-profil), roles: ROLE_USER }
+        - { path: ^/trajets/(new|mes-trajets), roles: ROLE_USER }
         - { path: ^/reservation, roles: ROLE_USER }
         - { path: ^/avis, roles: ROLE_USER }
 

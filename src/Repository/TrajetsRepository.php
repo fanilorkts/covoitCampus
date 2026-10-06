@@ -60,6 +60,18 @@ class TrajetsRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
+    /** Alias appelé par TrajetsController et AvisController. */
+    public function cloturerTrajetsPasses(): void
+    {
+        $this->CloturerTrajets();
+    }
+
+    /** Alias appelé par TrajetsController::mesTrajets(). */
+    public function countTerminesCommeConducteur(Utilisateurs $conducteur): int
+    {
+        return $this->countConducteur($conducteur);
+    }
+
     public function countConducteur(Utilisateurs $conducteur): int
     {
         return (int) $this->createQueryBuilder('t')

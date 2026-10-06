@@ -1,15 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Espace admin{% endblock %}
+{% block title %}Admin{% endblock %}
 
 {% block body %}
-    <h1>Espace admin</h1>
-    <ul>
-        <li>Trajets réalisés : {{ nbTermines }}</li>
-        <li>Taux de remplissage moyen : {{ taux|number_format(1, ',') }} %</li>
-        <li>Utilisateurs : {{ nbUtilisateurs }}</li>
-        <li>Avis : {{ nbAvis }}</li>
-    </ul>
-    <a href="{{ path('app_admin_avis') }}">Modérer les avis</a> |
-    <a href="{{ path('app_admin_utilisateurs') }}">Gérer les comptes</a>
+<div class="page">
+    <header class="page-head">
+        <div>
+            <h1 class="page-title">Admin</h1>
+            <p class="page-subtitle">Platform overview.</p>
+        </div>
+    </header>
+
+    <div class="panel-grid">
+        <div class="kpi"><strong>{{ nbTermines }}</strong><span>Rides completed</span></div>
+        <div class="kpi"><strong>{{ taux|number_format(1, ',') }} %</strong><span>Average fill rate</span></div>
+        <div class="kpi"><strong>{{ nbUtilisateurs }}</strong><span>Users</span></div>
+        <div class="kpi"><strong>{{ nbAvis }}</strong><span>Reviews</span></div>
+    </div>
+
+    <div class="btn-row">
+        <a class="btn btn--primary" href="{{ path('app_admin_avis') }}">Moderate reviews</a>
+        <a class="btn btn--secondary" href="{{ path('app_admin_utilisateurs') }}">Manage accounts</a>
+    </div>
+</div>
 {% endblock %}

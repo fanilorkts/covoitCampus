@@ -71,7 +71,7 @@
         <section class="dashboard__full">
             <div class="section-head">
                 <h2>Upcoming rides</h2>
-                <a href="#">View all</a>
+                <a href="{{ path('app_trajets_mes_trajets') }}">View all</a>
             </div>
             <div class="ride-list">
                 {% for t in upcoming %}
@@ -105,7 +105,7 @@
         <section>
             <div class="section-head">
                 <h2>Past rides</h2>
-                <a href="#">View all</a>
+                <a href="{{ path('app_trajets_mes_trajets') }}">View all</a>
             </div>
             <div class="ride-list">
                 {% for t in past %}
@@ -126,7 +126,7 @@
         <section>
             <div class="section-head">
                 <h2>Reviews</h2>
-                <a href="#">View all</a>
+                <a href="{{ path('app_profil', {id: user.id}) }}">View all</a>
             </div>
             <div class="review-list">
                 {% for a in reviews %}
@@ -166,7 +166,7 @@
         <section>
             <div class="section-head">
                 <h2>Profile</h2>
-                <a href="#">View all</a>
+                <a href="{{ path('app_profil', {id: user.id}) }}">View all</a>
             </div>
             <div class="profile">
                 <div class="profile__card">

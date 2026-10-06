@@ -1,13 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Trajets{% endblock %}
+{% block title %}Edit ride{% endblock %}
 
 {% block body %}
-    <h1>Edit Trajets</h1>
+<div class="page page--narrow">
+    <header class="page-head">
+        <div>
+            <h1 class="page-title">Edit ride</h1>
+            <p class="page-subtitle">{{ trajet.origine }} → {{ trajet.destination }}</p>
+        </div>
+    </header>
 
-    {{ include('trajets/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('trajets/_form.html.twig', {'button_label': 'Update ride'}) }}
 
-    <a href="{{ path('app_trajets_index') }}">back to list</a>
-
-    {{ include('trajets/_delete_form.html.twig') }}
+    <div class="btn-row">
+        <a class="btn btn--secondary" href="{{ path('app_trajets_show', {'id': trajet.id}) }}">Cancel</a>
+        {{ include('trajets/_delete_form.html.twig') }}
+    </div>
+</div>
 {% endblock %}

@@ -1,52 +1,51 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Trajets index{% endblock %}
+{% block title %}Find a ride{% endblock %}
 
 {% block body %}
-    <h1>Trajets index</h1>
+<div class="page">
+    <header class="page-head">
+        <div>
+            <h1 class="page-title">Find a ride</h1>
+            <p class="page-subtitle">Open rides heading your way.</p>
+        </div>
+        {% if app.user %}
+            <a class="btn btn--primary" href="{{ path('app_trajets_new') }}">Offer a ride</a>
+        {% endif %}
+    </header>
 
-    <form method ="get">
-        <input name="origine" placeholder="Départ" value="{{ app.request.query.get('origine') }}">
-        <input name="destination" placeholder="Arrivée" value="{{ app.request.query.get('destination') }}">
-        <input type="date" name="date_saisie" value="{{ app.request.query.get('date_saisie') }}">
-        <button type="submit">Rechercher</button>
+    <form method="get" class="filter-bar">
+        <label><span>Leaving from</span>
+            <input type="text" name="origine" placeholder="Départ" value="{{ app.request.query.get('origine') }}">
+        </label>
+        <label><span>Going to</span>
+            <input type="text" name="destination" placeholder="Arrivée" value="{{ app.request.query.get('destination') }}">
+        </label>
+        <label><span>Date</span>
+            <input type="date" name="date_saisie" value="{{ app.request.query.get('date_saisie') }}">
+        </label>
+        <button type="submit" class="btn btn--primary">Search</button>
     </form>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Origine</th>
-                <th>Destination</th>
-                <th>Date_heure</th>
-                <th>Places_totales</th>
-                <th>Places_restantes</th>
-                <th>Statut</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for trajet in trajets %}
-            <tr>
-                <td>{{ trajet.id }}</td>
-                <td>{{ trajet.origine }}</td>
-                <td>{{ trajet.destination }}</td>
-                <td>{{ trajet.dateHeure ? trajet.dateHeure|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ trajet.placesTotales }}</td>
-                <td>{{ trajet.placesRestantes }}</td>
-                <td>{{ trajet.statut }}</td>
-                <td>
-                    <a href="{{ path('app_trajets_show', {'id': trajet.id}) }}">show</a>
-                    <a href="{{ path('app_trajets_edit', {'id': trajet.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_trajets_new') }}">Create new</a>
+    {% if trajets|length %}
+        <div class="ride-grid">
+            {% for trajet in trajets %}
+                <article class="trip-card">
+                    <div class="trip-card__route">{{ trajet.origine }} <span>→</span> {{ trajet.destination }}</div>
+                    <div class="trip-card__meta">
+                        <span>{{ trajet.dateHeure ? trajet.dateHeure|date('d/m/Y H:i') : '' }}</span>
+                        <span>{{ trajet.placesRestantes }} / {{ trajet.placesTotales }} places</span>
+                        <span>Driver: {{ trajet.idConducteur.prenom }}</span>
+                    </div>
+                    <div class="trip-card__foot">
+                        <span class="trip-card__price">{{ trajet.prix|number_format(2, ',', ' ') }} €</span>
+                        <a class="btn btn--accept" href="{{ path('app_trajets_show', {'id': trajet.id}) }}">View ride</a>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-card">No ride matches your search yet.</div>
+    {% endif %}
+</div>
 {% endblock %}

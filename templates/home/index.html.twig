@@ -73,7 +73,7 @@
 </section>
 
 {# ---------- How it works ---------- #}
-<section class="home-container">
+<section class="home-container" id="how-it-works">
     <div class="section-head">
         <h2 class="section-head__title">How it works</h2>
         <p class="section-head__text">Whether you're looking for a ride or offering one, it only takes a few steps.</p>
@@ -188,7 +188,7 @@
                 <ul class="footer__list">
                     <li><a href="{{ path('app_trajets_index') }}">Find a ride</a></li>
                     <li><a href="{{ path('app_trajets_new') }}">Offer a ride</a></li>
-                    <li><a href="#">My bookings</a></li>
+                    <li><a href="{{ path('app_reservation_mes_reservations') }}">My bookings</a></li>
                 </ul>
             </div>
 

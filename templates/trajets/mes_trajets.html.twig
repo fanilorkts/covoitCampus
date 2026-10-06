@@ -1,48 +1,58 @@
-{%extends 'base.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Mes Trajets{% endblock %}
+{% block title %}My rides{% endblock %}
 
 {% block body %}
-    <h1>Mes Trajets</h1>
-    <p>Trajets réalisés : <strong>{{ nbRealises }}</strong></p>
-<p>Passager le plus fréquent :
-    {% if passagerFrequent %}
-        {{ passagerFrequent.prenom }} {{ passagerFrequent.nom }} ({{ nbFois }} trajet{{ nbFois > 1 ? 's' : '' }})
-    {% else %}
-        aucun pour le moment
-    {% endif %}
-</p>
+<div class="page">
+    <header class="page-head">
+        <div>
+            <h1 class="page-title">My rides</h1>
+            <p class="page-subtitle">The rides you offer as a driver.</p>
+        </div>
+        <a class="btn btn--primary" href="{{ path('app_trajets_new') }}">Offer a ride</a>
+    </header>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Origine</th>
-                <th>Destination</th>
-                <th>Horaires</th>
-                <th>Places Restantes</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for t  in trajets %}
-            <tr>
-                <td>{{ t.origine }}</td>
-                <td>{{ t.destination }}</td>
-                <td>{{ t.dateHeure|date('d-m-Y H:i') }}</td>
-                <td>{{ t.placesRestantes }} / {{ t.placesTotales }}</td>
-                <td>{{ t.statut }}</td>
-                <td>
-                    <a href="{{ path('app_trajets_show', {'id': t.id}) }}">Montrer</a>
-                    <a href="{{ path('app_trajets_edit', {'id': t.id}) }}">Modifier</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">Vous n'avez pas encore crée un trajet</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="panel-grid">
+        <div class="kpi"><strong>{{ nbRealises }}</strong><span>Rides completed</span></div>
+        <div class="kpi">
+            <strong>{% if passagerFrequent %}{{ passagerFrequent.prenom }}{% else %}–{% endif %}</strong>
+            <span>
+                {% if passagerFrequent %}
+                    Most frequent passenger ({{ nbFois }} ride{{ nbFois > 1 ? 's' : '' }})
+                {% else %}
+                    Most frequent passenger: none yet
+                {% endif %}
+            </span>
+        </div>
+    </div>
 
-    <a href="{{ path('app_trajets_new') }}">Créer un trajet</a>
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr><th>From</th><th>To</th><th>Date</th><th>Seats left</th><th>Status</th><th></th></tr>
+            </thead>
+            <tbody>
+            {% for t in trajets %}
+                <tr>
+                    <td>{{ t.origine }}</td>
+                    <td>{{ t.destination }}</td>
+                    <td>{{ t.dateHeure|date('d/m/Y H:i') }}</td>
+                    <td>{{ t.placesRestantes }} / {{ t.placesTotales }}</td>
+                    <td>
+                        <span class="badge {{ t.statut == 'Terminé' ? 'badge--done' : (t.statut == 'Complet' ? 'badge--full') }}">{{ t.statut }}</span>
+                    </td>
+                    <td>
+                        <div class="actions">
+                            <a class="btn btn--secondary" href="{{ path('app_trajets_show', {'id': t.id}) }}">Show</a>
+                            <a class="btn btn--edit" href="{{ path('app_trajets_edit', {'id': t.id}) }}">Edit</a>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="6" class="empty">You haven't offered any ride yet.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

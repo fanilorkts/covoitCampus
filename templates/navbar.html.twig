@@ -1,32 +1,52 @@
 {% set route = app.request.attributes.get('_route') %}
 
-<nav class="navbar">
-    <a class="navbar__brand" href="{{ path('app_dashboard_driver') }}">BackSeat.</a>
+{% if app.user %}
+{# ============ Navbar CONNECTÉ ============ #}
+<nav class="navbar navbar--app">
+    <a class="navbar__brand" href="{{ path('app_dashboard_passenger') }}">BackSeat.</a>
+
     <ul class="navbar__links">
-        <li><a href="...">Offer a ride</a></li>
-        <li><a href="...">Find passenger</a></li>
-        <li><a href="...">Messages</a></li>
+        <li><a href="{{ path('app_trajets_new') }}" {{ route == 'app_trajets_new' ? 'aria-current=page' }}>Offer a ride</a></li>
+        <li><a href="{{ path('app_trajets_index') }}" {{ route == 'app_trajets_index' ? 'aria-current=page' }}>Find a ride</a></li>
+        <li><a href="{{ path('app_trajets_mes_trajets') }}" {{ route == 'app_trajets_mes_trajets' ? 'aria-current=page' }}>My rides</a></li>
+        <li><a href="{{ path('app_reservation_mes_reservations') }}" {{ route == 'app_reservation_mes_reservations' ? 'aria-current=page' }}>My bookings</a></li>
     </ul>
+
     <div class="navbar__right">
         <div class="role-toggle">
             <a href="{{ path('app_dashboard_passenger') }}" class="{{ route == 'app_dashboard_passenger' ? 'is-active' }}">Passenger</a>
             <a href="{{ path('app_dashboard_driver') }}" class="{{ route == 'app_dashboard_driver' ? 'is-active' }}">Driver</a>
         </div>
-    </div>
-        {% if app.user %}
-            <div class="user-menu">
-                <button type="button" class="avatar" aria-haspopup="true" aria-label="Menu utilisateur">
-                    {{ app.user.prenom|first|upper }}
-                </button>
-                <ul class="user-menu__list">
-                    {# TODO : remplace "#" par ta page de liste des trajets : path('nom_de_ta_route') #}
-                    <li><a href="#">Rides</a></li>
-                    {# Si ton logout est défini dans security.yaml, tu peux utiliser path('app_logout') #}
-                    <li><a href="/logout">Logout</a></li>
-                </ul>
-            </div>
-        {% else %}
-            <a href="/login">Log In</a>
-        {% endif %}
+
+        <div class="user-menu">
+            <button type="button" class="avatar" aria-haspopup="true" aria-label="Menu utilisateur">
+                {{ app.user.prenom|first|upper }}
+            </button>
+            <ul class="user-menu__list">
+                <li><a href="{{ path('app_profil', {id: app.user.id}) }}">My profile</a></li>
+                <li><a href="{{ path('app_profil_modifier') }}">Edit profile</a></li>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li><a href="{{ path('app_admin_index') }}">Admin</a></li>
+                {% endif %}
+                <li><a href="{{ path('app_logout') }}">Log out</a></li>
+            </ul>
+        </div>
     </div>
 </nav>
+
+{% else %}
+{# ============ Navbar VISITEUR ============ #}
+<nav class="navbar navbar--public">
+    <a class="navbar__brand" href="{{ path('app_home') }}">BackSeat.</a>
+
+    <ul class="navbar__links">
+        <li><a href="{{ path('app_home') }}#how-it-works">How it works</a></li>
+        <li><a href="{{ path('app_trajets_index') }}" {{ route == 'app_trajets_index' ? 'aria-current=page' }}>Find a ride</a></li>
+    </ul>
+
+    <div class="navbar__right">
+        <a class="navbar__login" href="{{ path('app_login') }}">Log in</a>
+        <a class="btn btn--primary" href="{{ path('app_register') }}">Sign up</a>
+    </div>
+</nav>
+{% endif %}

@@ -1,15 +1,23 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Noter {{ cible.prenom }}{% endblock %}
+{% block title %}Rate {{ cible.prenom }}{% endblock %}
 
 {% block body %}
-    <h1>Noter {{ cible.prenom }} {{ cible.nom }}</h1>
-    <p>Trajet : {{ trajet.origine }} → {{ trajet.destination }}</p>
+<div class="page page--narrow">
+    <header class="page-head">
+        <div>
+            <h1 class="page-title">Rate {{ cible.prenom }} {{ cible.nom }}</h1>
+            <p class="page-subtitle">Ride: {{ trajet.origine }} → {{ trajet.destination }}</p>
+        </div>
+    </header>
 
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button class="btn">Envoyer mon avis</button>
-    {{ form_end(form) }}
+    <div class="form-card">
+        {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <button class="btn btn--primary">Send my review</button>
+        {{ form_end(form) }}
+    </div>
 
-    <a href="{{ path('app_trajets_show', {'id': trajet.id}) }}">Retour au trajet</a>
+    <a class="back-link" href="{{ path('app_trajets_show', {'id': trajet.id}) }}">← Back to the ride</a>
+</div>
 {% endblock %}

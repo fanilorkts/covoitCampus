@@ -7,6 +7,7 @@ use App\Entity\Trajets;
 use App\Entity\Utilisateurs;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -16,7 +17,7 @@ class ReservationType extends AbstractType
     {
         $builder
             ->add('statut')
-            ->add('date_reservation')
+            ->add('date_reservation', DateType::class, ['widget' => 'single_text'])
             ->add('id_trajet', EntityType::class, [
                 'class' => Trajets::class,
                 'choice_label' => 'id',

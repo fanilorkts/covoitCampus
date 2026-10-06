@@ -1,41 +1,41 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mes Réservations{% endblock %}
+{% block title %}My bookings{% endblock %}
 
 {% block body %}
-    <h1>Mes Réservations</h1>
+<div class="page">
+    <header class="page-head">
+        <div>
+            <h1 class="page-title">My bookings</h1>
+            <p class="page-subtitle">The rides you booked as a passenger.</p>
+        </div>
+        <a class="btn btn--primary" href="{{ path('app_trajets_index') }}">Find a ride</a>
+    </header>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Trajets</th>
-                <th>Date du trajet</th>
-                <th>Date de réservation</th>
-                <th>Statut</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for r  in reservations %}
-            <tr>
-                <td><a href="{{path('app_trajets_show', {'id' : r.idTrajet.id})}}">{{ r.idTrajet.origine }} → {{ r.idTrajet.destination }}</a></td>
-                <td>{{ r.idTrajet.dateHeure|date('d-m-Y H:i') }}</td>
-                <td>{{ r.dateReservation ? r.dateReservation|date('Y-m-d') : '' }}</td>
-                <td>{{ r.statut }}</td>
-                <td>
-                    <form method="post" action="{{ path('app_reservation_annuler', {'id': r.id}) }}">
-                        <input type="hidden" name="_token" value="{{ csrf_token('annuler' ~ r.id) }}">
-                        <button type="submit">Annuler</button>
-                    </form>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">Aucun trajet trouvé</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_trajets_index') }}">Trajets disponibles</a>
+    <div class="table-wrap">
+        <table class="table">
+            <thead><tr><th>Ride</th><th>Ride date</th><th>Booked on</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+            {% for r in reservations %}
+                <tr>
+                    <td><a href="{{ path('app_trajets_show', {'id': r.idTrajet.id}) }}">{{ r.idTrajet.origine }} → {{ r.idTrajet.destination }}</a></td>
+                    <td>{{ r.idTrajet.dateHeure|date('d/m/Y H:i') }}</td>
+                    <td>{{ r.dateReservation ? r.dateReservation|date('d/m/Y') : '' }}</td>
+                    <td><span class="badge {{ r.statut == 'En attente' ? 'badge--pending' : (r.statut == 'Refusée' ? 'badge--refused') }}">{{ r.statut }}</span></td>
+                    <td>
+                        <div class="actions">
+                            <form method="post" action="{{ path('app_reservation_annuler', {'id': r.id}) }}" onsubmit="return confirm('Annuler cette réservation ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('annuler' ~ r.id) }}">
+                                <button type="submit" class="btn btn--danger">Cancel</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="5" class="empty">You haven't booked any ride yet.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}
