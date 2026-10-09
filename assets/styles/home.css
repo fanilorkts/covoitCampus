@@ -460,3 +460,23 @@ a { color: inherit; text-decoration: none; }
   .search { flex-direction: column; align-items: stretch; gap: 10px; }
   .search__field + .search__field { border-left: none; border-top: 1px solid var(--divider); padding-top: 10px; }
 }
+
+.bento__card--light {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;               /* ← ajouté */
+  background: var(--white);
+  /* ... le reste inchangé ... */
+}
+
+.bento__card--accent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;               /* ← ajouté */
+  background: var(--terracotta);
+  /* ... le reste inchangé ... */
+}
+
+.bento__glyph { flex-shrink: 0; }   /* ← nouvelle règle, à ajouter */

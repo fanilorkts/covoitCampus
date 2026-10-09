@@ -314,3 +314,21 @@ textarea:focus {
     height: auto;
     object-fit: contain; /* conserve le ratio de la voiture sans la déformer */
 }
+
+/* Style commun pour les petites cartes bento */
+.bento__card--light,
+.bento__card--accent {
+    display: flex;
+    align-items: center;    /* Centre verticalement l'icône et le texte */
+    justify-content: flex-start; /* Aligne le contenu vers la gauche */
+    gap: 16px;              /* Espace entre l'icône et le texte */
+    padding: 24px;
+}
+
+/* Taille et comportement des icônes SVG */
+.bento__card--light .bento__icon,
+.bento__card--accent .bento__icon {
+    flex-shrink: 0;         /* Empêche l'icône de s'écraser si le texte est long */
+    width: 32px;
+    height: 32px;
+}
