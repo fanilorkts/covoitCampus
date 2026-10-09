@@ -38,11 +38,15 @@ body {
   line-height: 1.5;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   color: var(--text-dark);
   margin-top: 0;
   font-weight: 600;
+}
+
+h2.bento_title{
+  color : white
 }
 
 h1 { font-size: 32px; }
