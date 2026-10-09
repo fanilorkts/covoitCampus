@@ -14,7 +14,7 @@
         <section>
             <div class="stats">
                 <div class="stat-card">
-                    <div class="stat-card__icon"><i class="bi bi-car-front"></i></div>
+                    <div class="stat-card__icon">🚗</div>
                     <div class="stat-card__value">{{ stats.rides }}</div>
                     <div class="stat-card__label">Rides shared</div>
                 </div>
@@ -24,7 +24,7 @@
                     <div class="stat-card__label">Money shared</div>
                 </div>
                 <div class="stat-card">
-                   <div class="stat-card__icon"><i class="bi bi-tree"></i></div>
+                    <div class="stat-card__icon">🍃</div>
                     <div class="stat-card__value">{{ stats.co2 }}kg</div>
                     <div class="stat-card__label">CO2 saved</div>
                 </div>
@@ -145,21 +145,25 @@
             </div>
         </section>
 
-        {# ---------- Véhicule (statique : pas encore de données en base) ---------- #}
+        {# ---------- Véhicule(s) ---------- #}
         <section>
             <div class="section-head">
-                <h2>Vehicle</h2>
-                <span class="badge">Verified</span>
+                <h2>Vehicle{{ vehicules|length > 1 ? 's' : '' }}</h2>
+                <a href="{{ path('app_vehicule_index') }}">Manage</a>
             </div>
-            <div class="vehicle">
-                <div class="field">Volkswagen</div>
-                <div class="field">Golf</div>
-                <div class="field">2020</div>
-                <div class="vehicle__icon">icon</div>
-                <div class="field">XX-XXX-XX</div>
-                <div class="field">5 seats</div>
-                <div class="field">White</div>
-            </div>
+            {% for v in vehicules %}
+                <div class="vehicle">
+                    <div class="field">{{ v.marque }}</div>
+                    <div class="field">{{ v.modele }}</div>
+                    <div class="field">{{ v.annee ?? '–' }}</div>
+                    <div class="vehicle__icon">icon</div>
+                    <div class="field">{{ v.immatriculation }}</div>
+                    <div class="field">{{ v.nbPlaces }} seats</div>
+                    <div class="field">{{ v.couleur ?? '–' }}</div>
+                </div>
+            {% else %}
+                <p class="page-subtitle">No vehicle yet. <a href="{{ path('app_vehicule_new') }}">Add your vehicle</a></p>
+            {% endfor %}
         </section>
 
         {# ---------- Profil ---------- #}

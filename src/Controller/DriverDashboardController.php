@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Avis;
 use App\Entity\Reservation;
 use App\Entity\Trajets;
+use App\Entity\Vehicule;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -108,8 +109,11 @@ final class DriverDashboardController extends AbstractController
             ->setParameter('u', $user)
             ->getQuery()->getSingleScalarResult();
 
+        $vehicules = $em->getRepository(Vehicule::class)->findBy(['proprietaire' => $user], ['marque' => 'ASC', 'modele' => 'ASC']);
+
         return $this->render('driverdashboard.html.twig', [
             'user' => $user,
+            'vehicules' => $vehicules,
             'upcoming' => $upcoming,
             'past' => $past,
             'requests' => $requests,

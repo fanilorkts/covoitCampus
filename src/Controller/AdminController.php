@@ -8,6 +8,7 @@ use App\Entity\Utilisateurs;
 use App\Enum\Role;
 use App\Repository\AvisRepository;
 use App\Repository\UtilisateursRepository;
+use App\Repository\VehiculeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -83,5 +84,22 @@ final class AdminController extends AbstractController
         $this->addFlash('success', 'Rôle modifié.');
 
         return $this->redirectToRoute('app_admin_utilisateurs');
+    }
+
+    #[Route('/vehicules', name: 'app_admin_vehicules', methods: ['GET'])]
+    public function vehicules(Request $request, VehiculeRepository $repository): Response
+    {
+        $page = max(1, $request->query->getInt('page', 1));
+        $terme = trim($request->query->getString('q'));
+        $vehicules = $repository->rechercher($terme, $page);
+        $total = \count($vehicules);
+
+        return $this->render('admin/vehicules.html.twig', [
+            'vehicules' => $vehicules,
+            'total' => $total,
+            'page' => $page,
+            'pages' => max(1, (int) ceil($total / VehiculeRepository::PAR_PAGE)),
+            'q' => $terme,
+        ]);
     }
 }

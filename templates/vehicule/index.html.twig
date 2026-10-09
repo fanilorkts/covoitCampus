@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My vehicles{% endblock %}
+
+{% block body %}
+<div class="page">
+    <header class="page-head">
+        <div>
+            <h1 class="page-title">My vehicles</h1>
+            <p class="page-subtitle">The vehicles you drive with.</p>
+        </div>
+        <a class="btn btn--primary" href="{{ path('app_vehicule_new') }}">Add a vehicle</a>
+    </header>
+
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr><th>Brand</th><th>Model</th><th>Year</th><th>Plate</th><th>Seats</th><th>Colour</th><th></th></tr>
+            </thead>
+            <tbody>
+            {% for v in vehicules %}
+                <tr>
+                    <td>{{ v.marque }}</td>
+                    <td>{{ v.modele }}</td>
+                    <td>{{ v.annee ?? '–' }}</td>
+                    <td>{{ v.immatriculation }}</td>
+                    <td>{{ v.nbPlaces }}</td>
+                    <td>{{ v.couleur ?? '–' }}</td>
+                    <td>
+                        <div class="actions">
+                            <a class="btn btn--edit" href="{{ path('app_vehicule_edit', {'id': v.id}) }}">Edit</a>
+                            {{ include('vehicule/_delete_form.html.twig', {'vehicule': v}) }}
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="7" class="empty">You haven't added any vehicle yet.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

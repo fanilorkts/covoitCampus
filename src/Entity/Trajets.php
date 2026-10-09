@@ -36,7 +36,7 @@ class Trajets
     #[ORM\Column(length: 255)]
     private ?string $statut = null;
 
-    #[ORM\Column(type: 'decimal', precision: 6, scale: 2, options: ['default' => 0])]
+    #[ORM\Column(type: 'decimal', precision: 6, scale: 2, options: ['default' => '0.00'])]
     private ?string $prix = '0.00';
 
     #[ORM\ManyToOne (targetEntity: Utilisateurs::class)]

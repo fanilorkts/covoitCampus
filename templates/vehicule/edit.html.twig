@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit vehicle{% endblock %}
+
+{% block body %}
+<div class="page page--narrow">
+    <header class="page-head">
+        <div>
+            <h1 class="page-title">Edit vehicle</h1>
+            <p class="page-subtitle">{{ vehicule.marque }} {{ vehicule.modele }} · {{ vehicule.immatriculation }}</p>
+        </div>
+    </header>
+
+    {{ include('vehicule/_form.html.twig', {'button_label': 'Update vehicle'}) }}
+
+    <div class="btn-row">
+        <a class="btn btn--secondary" href="{{ path('app_vehicule_index') }}">Cancel</a>
+        {{ include('vehicule/_delete_form.html.twig') }}
+    </div>
+</div>
+{% endblock %}

@@ -295,3 +295,22 @@ textarea:focus {
   border-bottom: 1px solid var(--border-divider);
   font-size: 13px;
 }
+
+/* Conteneur de l'image (le bloc vert clair) */
+.vehicle__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;        /* ou la largeur souhaitée pour la carte */
+    height: 100px;      /* ajuster la hauteur du bloc si nécessaire */
+    overflow: hidden;    /* empêche tout débordement */
+}
+
+/* L'image elle-même */
+.vehicle__icon img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain; /* conserve le ratio de la voiture sans la déformer */
+}

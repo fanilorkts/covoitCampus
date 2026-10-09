@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vehicles - BackSeat{% endblock %}
+
+{% block body %}
+<div class="admin-shell">
+    <header class="admin-head">
+        <div>
+            <span class="admin-eyebrow">BackSeat / Administration</span>
+            <h1 class="admin-title">Vehicles</h1>
+            <p class="admin-subtitle">Browse every vehicle registered by drivers.</p>
+        </div>
+        <span class="admin-badge">Vehicles</span>
+    </header>
+
+    <nav class="admin-nav" aria-label="Administration navigation">
+        <a class="admin-nav__link" href="{{ path('app_admin_index') }}">Overview</a>
+        <a class="admin-nav__link" href="{{ path('app_admin_utilisateurs') }}">Users</a>
+        <a class="admin-nav__link" href="{{ path('app_admin_avis') }}">Reviews</a>
+        <a class="admin-nav__link admin-nav__link--active" href="{{ path('app_admin_vehicules') }}">Vehicles</a>
+    </nav>
+
+    <section class="admin-panel admin-panel--table">
+        <div class="admin-panel__head">
+            <div>
+                <span class="admin-panel__kicker">Fleet</span>
+                <h2>Registered vehicles</h2>
+            </div>
+            <span class="admin-count">{{ total }} vehicle{{ total == 1 ? '' : 's' }}</span>
+        </div>
+
+        <form method="get" action="{{ path('app_admin_vehicules') }}" style="display:flex; gap:8px; margin-bottom:16px;">
+            <input type="search" name="q" value="{{ q }}" placeholder="Search brand, model, plate or colour…" style="flex:1; padding:10px 12px; border:1px solid var(--ui-border); border-radius:12px;">
+            <button class="admin-action" type="submit">Search</button>
+            {% if q %}<a class="admin-action" href="{{ path('app_admin_vehicules') }}">Reset</a>{% endif %}
+        </form>
+
+        <div class="admin-table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Vehicle</th>
+                        <th>Year</th>
+                        <th>Plate</th>
+                        <th>Seats</th>
+                        <th>Colour</th>
+                        <th>Owner</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for v in vehicules %}
+                    <tr>
+                        <td><strong>{{ v.marque }} {{ v.modele }}</strong></td>
+                        <td class="admin-table__muted">{{ v.annee ?? '–' }}</td>
+                        <td>{{ v.immatriculation }}</td>
+                        <td class="admin-table__muted">{{ v.nbPlaces }}</td>
+                        <td class="admin-table__muted">{{ v.couleur ?? '–' }}</td>
+                        <td>
+                            <div class="admin-user">
+                                <span class="admin-avatar">{{ v.proprietaire.prenom|first|upper }}</span>
+                                <span>{{ v.proprietaire.prenom }} {{ v.proprietaire.nom }}</span>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="6" class="admin-empty">No vehicles to display.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if pages > 1 %}
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px;">
+                {% if page > 1 %}
+                    <a class="admin-action" href="{{ path('app_admin_vehicules', {q: q|default(null), page: page - 1}) }}">← Previous</a>
+                {% else %}<span></span>{% endif %}
+                <span class="admin-table__muted">Page {{ page }} / {{ pages }}</span>
+                {% if page < pages %}
+                    <a class="admin-action" href="{{ path('app_admin_vehicules', {q: q|default(null), page: page + 1}) }}">Next →</a>
+                {% else %}<span></span>{% endif %}
+            </div>
+        {% endif %}
+    </section>
+
+    <a class="admin-back" href="{{ path('app_admin_index') }}">← Back to dashboard</a>
+</div>
+{% endblock %}

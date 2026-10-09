@@ -17,6 +17,7 @@
         <a class="admin-nav__link admin-nav__link--active" href="{{ path('app_admin_index') }}">Overview</a>
         <a class="admin-nav__link" href="{{ path('app_admin_utilisateurs') }}">Users</a>
         <a class="admin-nav__link" href="{{ path('app_admin_avis') }}">Reviews</a>
+        <a class="admin-nav__link" href="{{ path('app_admin_vehicules') }}">Vehicles</a>
     </nav>
 
     <section class="admin-stats" aria-label="Platform statistics">
@@ -69,6 +70,15 @@
                     <span>
                         <strong>Review moderation</strong>
                         <small>Review comments and remove inappropriate content.</small>
+                    </span>
+                    <span class="admin-tool__arrow">→</span>
+                </a>
+
+                <a class="admin-tool" href="{{ path('app_admin_vehicules') }}">
+                    <span class="admin-tool__icon admin-tool__icon--indigo">03</span>
+                    <span>
+                        <strong>Vehicles</strong>
+                        <small>Browse and search every registered vehicle.</small>
                     </span>
                     <span class="admin-tool__arrow">→</span>
                 </a>

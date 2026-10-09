@@ -25,6 +25,7 @@
             <ul class="user-menu__list">
                 <li><a href="{{ path('app_profil', {id: app.user.id}) }}">My profile</a></li>
                 <li><a href="{{ path('app_profil_modifier') }}">Edit profile</a></li>
+                <li><a href="{{ path('app_vehicule_index') }}">My vehicles</a></li>
                 {% if is_granted('ROLE_ADMIN') %}
                     <li><a href="{{ path('app_admin_index') }}">Admin</a></li>
                 {% endif %}

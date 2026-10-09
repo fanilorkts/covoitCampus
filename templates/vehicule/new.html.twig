@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add a vehicle{% endblock %}
+
+{% block body %}
+<div class="page page--narrow">
+    <header class="page-head">
+        <div>
+            <h1 class="page-title">Add a vehicle</h1>
+            <p class="page-subtitle">Tell passengers what they'll be riding in.</p>
+        </div>
+    </header>
+
+    {{ include('vehicule/_form.html.twig', {'button_label': 'Add vehicle'}) }}
+
+    <a class="back-link" href="{{ path('app_vehicule_index') }}">← Back to my vehicles</a>
+</div>
+{% endblock %}
